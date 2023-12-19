@@ -3,8 +3,5 @@
 </script>
 
 <template>
-  <main>
-  </main>
+  <p>tips</p>
 </template>
-
-<style lang="scss"></style>

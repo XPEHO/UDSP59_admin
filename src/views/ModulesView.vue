@@ -3,8 +3,7 @@
 </script>
 
 <template>
-  <main>
-  </main>
+  <p>modules</p>
 </template>
 
-<style lang="scss"></style>
+<style></style>

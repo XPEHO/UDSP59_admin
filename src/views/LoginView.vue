@@ -1,5 +1,16 @@
 <script setup lang="ts">
 
+import { ref } from 'vue';
+import GoogleButton from '../components/GoogleButton.vue'
+import { useUserStore } from '../stores/user'
+import router from '@/router';
+
+// Get the stores
+const userStore = useUserStore();
+
+// Reset the store by default
+userStore.reset();
+
 </script>
 
 <template>
@@ -10,11 +21,10 @@
     <section>
       <h1 class="title-text">UDSP59 FORMATION</h1>
       <h2 class="subtitle-text">Espace Administrateur</h2>
-      <form>
-        <input class="input-text" type="email" id="email" size="25" placeholder="Email" />
-        <input class="input-text" type="password" id="password" size="25" placeholder="Mot de passe" />
-        <button class="button-text" type="submit">Se connecter</button>
-      </form>
+      <button class="google-button" @click="userStore.loginWithGoogle()">
+        <img src="../assets/google-logo.png" alt="Google logo">
+        <span>Se connecter avec Google</span>
+      </button>
       <footer>
         <p class="link-text">Produit par <a class="link-text-clickable" href="https://xpeho.com/"
             target="_blank">XPEHO</a></p>
@@ -69,20 +79,8 @@ section:last-child {
     margin-bottom: 4rem;
   }
 
-  & form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  & .google-button {
     margin-bottom: 2rem;
-
-    & .input-text {
-      margin-bottom: 1rem;
-
-      &:nth-child(2) {
-        margin-bottom: 3rem;
-      }
-    }
   }
 
   & footer {

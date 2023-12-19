@@ -112,3 +112,29 @@ body {
   font-size: 32pt;
   font-weight: bold;
 }
+
+.google-button {
+  font-size: 18pt;
+  font-weight: 500;
+  padding: 0.5rem 2rem;
+  color: dimgray;
+  background: var(--color-background);
+  border: 1px solid #c3c3c3;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.1s ease-in-out;
+
+  & img {
+    width: 2.2rem;
+    margin-right: 1rem;
+  }
+
+  &:active {
+    box-shadow: 1px 1px 10px 0px rgba(0, 0, 0, 0.2);
+  }
+}
