@@ -3,8 +3,6 @@ import { useUserStore } from '../stores/user'
 
 import LoginView from '../views/LoginView.vue'
 import PageView from '../views/PageView.vue'
-import ModulesView from '../views/ModulesView.vue'
-import TipsView from '../views/TipsView.vue'
 
 // Init router
 const router = createRouter({
@@ -23,6 +21,11 @@ const router = createRouter({
         {
           path: '/tips',
           name: 'Astuces',
+          component: PageView
+        },
+        {
+          path: '/accounts',
+          name: 'Comptes',
           component: PageView
         }
       ]
@@ -44,6 +47,10 @@ router.beforeEach(async (to, from) => {
   // Redirect the user if is not authenticated
   if (!userStore.isLoggedIn && to.name !== 'Login') {
     return { name: 'Login' }
+  }
+
+  if (to.name === 'Comptes' && !userStore.isAdmin) {
+    return { name: 'Modules' }
   }
 
 })
