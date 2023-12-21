@@ -1,7 +1,21 @@
 <script setup lang="ts">
+import { useDataStore } from '@/stores/data';
+import { onMounted, ref } from 'vue';
+import Loader from '@/components/Loader.vue';
+
+const dataStore = useDataStore()
+
+const isLoading = ref(true);
+onMounted(async () => {
+  await dataStore.loadTipsFromFirebase();
+  isLoading.value = false;
+});
 
 </script>
 
 <template>
-  <p>tips</p>
+  <Loader v-if="isLoading" />
+  <div v-else>
+    <p>tips</p>
+  </div>
 </template>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import { useUserStore } from '../stores/user'
-import router from '@/router';
 import { useRoute } from 'vue-router'
 import ModulesView from './ModulesView.vue';
 import TipsView from './TipsView.vue';
@@ -36,9 +35,11 @@ const userStore = useUserStore()
       <button class="add-button" @click="" title="Ajouter">
         <img src="../assets/add.svg">
       </button>
-      <ModulesView v-if="location.path == '/modules'" />
-      <TipsView v-if="location.path == '/tips'" />
-      <AccountsView v-if="location.path == '/accounts'" />
+      <section>
+        <ModulesView v-if="location.path == '/modules'" />
+        <TipsView v-if="location.path == '/tips'" />
+        <AccountsView v-if="location.path == '/accounts'" />
+      </section>
     </section>
   </main>
 </template>
@@ -54,7 +55,7 @@ main.page-view {
     background-position: center;
     background-size: cover;
     text-align: center;
-    flex: 0.25;
+    flex: 0.18;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -62,7 +63,7 @@ main.page-view {
     padding: 2rem 0;
 
     & img {
-      height: 30%;
+      height: 25%;
       margin-bottom: 2rem;
     }
 
@@ -74,7 +75,7 @@ main.page-view {
       align-items: center;
 
       & a {
-        font-size: 28pt;
+        font-size: 15pt;
         font-weight: bold;
         padding: 1rem 2rem;
         width: 80%;
@@ -87,6 +88,7 @@ main.page-view {
         transition: all 0.3s ease;
 
         &.router-link-active {
+          font-size: 18pt;
           padding: 2rem 2rem;
           background-color: var(--color-background);
           color: var(--color-secondary);
@@ -97,7 +99,7 @@ main.page-view {
 
   & section:last-child {
     position: relative;
-    flex: 0.75;
+    flex: 0.80;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -109,13 +111,13 @@ main.page-view {
       position: absolute;
       top: 0;
       width: 100%;
-      padding: 2rem 3rem;
+      padding: 2rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
 
       & .title-text {
-        margin-left: 1rem;
+        margin-left: 2rem;
       }
 
       & .disconnect-button {
@@ -124,8 +126,8 @@ main.page-view {
         cursor: pointer;
 
         & img {
-          height: 3rem;
-          width: 3rem;
+          height: 2rem;
+          width: 2rem;
         }
       }
     }
@@ -134,8 +136,8 @@ main.page-view {
       background-color: var(--color-secondary);
       border: none;
       border-radius: 50%;
-      height: 4rem;
-      width: 4rem;
+      height: 2.5rem;
+      width: 2.5rem;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -143,9 +145,17 @@ main.page-view {
       margin-bottom: 1rem;
 
       & img {
-        height: 3rem;
-        width: 3rem;
+        height: 1.5rem;
+        width: 1.5rem;
       }
+    }
+
+    & section {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }
