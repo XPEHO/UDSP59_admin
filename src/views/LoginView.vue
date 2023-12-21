@@ -71,7 +71,7 @@ main.login-view {
 
     & .google-button {
       margin-bottom: 2rem;
-      font-size: 18pt;
+      font-size: 15pt;
       font-weight: 500;
       padding: 0.5rem 2rem;
       color: dimgray;
@@ -104,7 +104,7 @@ main.login-view {
       column-gap: 2rem;
 
       & .link-text {
-        font-size: 15pt;
+        font-size: 12pt;
         font-weight: 400;
         line-height: 1.5;
         color: #251438;
@@ -112,7 +112,7 @@ main.login-view {
       }
 
       & .link-text-clickable {
-        font-size: 15pt;
+        font-size: 12pt;
         font-weight: 400;
         line-height: 1.5;
         color: #251438;
