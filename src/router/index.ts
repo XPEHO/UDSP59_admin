@@ -3,6 +3,10 @@ import { useUserStore } from '../stores/user'
 
 import LoginView from '../views/LoginView.vue'
 import PageView from '../views/PageView.vue'
+import ModulesView from '../views/ModulesView.vue'
+import TipsView from '../views/TipsView.vue'
+import AccountsView from '../views/AccountsView.vue'
+import ModuleView from '../views/ModuleView.vue'
 
 // Init router
 const router = createRouter({
@@ -16,17 +20,22 @@ const router = createRouter({
         {
           path: '/modules',
           name: 'Modules',
-          component: PageView
+          component: ModulesView,
         },
         {
           path: '/tips',
           name: 'Astuces',
-          component: PageView
+          component: TipsView
         },
         {
           path: '/accounts',
           name: 'Comptes',
-          component: PageView
+          component: AccountsView
+        },
+        {
+          path: '/module/:id',
+          name: 'Module',
+          component: ModuleView
         }
       ]
     },
