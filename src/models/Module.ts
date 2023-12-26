@@ -5,6 +5,7 @@ export class Module {
     image: string;
     title: string;
     parts: Array<ModulePart>;
+    [key: string]: any;
 
     constructor(icon: string, image: string, title: string, parts: Array<ModulePart>) {
         this.icon = icon;

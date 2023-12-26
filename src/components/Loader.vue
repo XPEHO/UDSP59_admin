@@ -14,19 +14,30 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="loader"></div>
+  <div class="loader-wrapper">
+    <div class="loader"></div>
+  </div>
 </template>
 
 <style>
-.loader {
-  display: none;
-  border: 5px solid;
-  border-color: var(--color-secondary) transparent var(--color-secondary) transparent;
-  border-radius: 50%;
-  height: 100px;
-  width: 100px;
-  animation: spin 1s linear infinite;
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  & .loader {
+    display: none;
+    border: 5px solid;
+    border-color: var(--color-secondary) transparent var(--color-secondary) transparent;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    animation: spin 1s linear infinite;
+  }
 }
+
 
 @keyframes spin {
   0% {

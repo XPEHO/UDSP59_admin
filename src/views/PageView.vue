@@ -26,8 +26,8 @@ const dataStore = useDataStore()
     <section class="content">
       <header>
         <div>
-          <h1 class="title-text">UDSP59 FORMATION</h1>
-          <h2 v-if="location.name == 'Module'" class="subtitle-text">{{ dataStore.module.title }}</h2>
+          <h1 class="title-style">UDSP59 FORMATION</h1>
+          <h2 v-if="location.name == 'Module'" class="subtitle-style">{{ dataStore.module.title }}</h2>
         </div>
         <button class="disconnect-button" @click="userStore.logout()" title="Se déconnecter">
           <img src="../assets/disconnect.svg">
@@ -126,7 +126,7 @@ main.page-view {
         margin-left: 2rem;
         position: relative;
 
-        & .subtitle-text {
+        & .subtitle-style {
           position: absolute;
           top: 3rem;
           color: var(--color-secondary);
@@ -169,6 +169,18 @@ main.page-view {
           width: 1.5rem;
         }
       }
+    }
+
+    & main {
+      padding: 1rem 1rem 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 1.5rem;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
     }
   }
 }
