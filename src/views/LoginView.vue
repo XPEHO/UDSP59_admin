@@ -16,8 +16,8 @@ userStore.reset();
       <img src="../assets/logo.png" alt="Logo">
     </section>
     <section>
-      <h1 class="title-text">UDSP59 FORMATION</h1>
-      <h2 class="subtitle-text">Espace Administrateur</h2>
+      <h1 class="title-style">UDSP59 FORMATION</h1>
+      <h2 class="subtitle-style">Espace Administrateur</h2>
       <button class="google-button" @click="userStore.loginWithGoogle()">
         <img src="../assets/google-logo.png" alt="Google logo">
         <span>Se connecter avec Google</span>
@@ -60,11 +60,11 @@ main.login-view {
     align-items: center;
     padding: 2rem;
 
-    & .title-text {
+    & .title-style {
       text-align: center;
     }
 
-    & .subtitle-text {
+    & .subtitle-style {
       text-align: center;
       margin-bottom: 4rem;
     }
