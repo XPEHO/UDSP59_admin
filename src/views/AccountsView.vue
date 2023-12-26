@@ -15,9 +15,9 @@ onMounted(async () => {
 
 <template>
   <Loader v-if="isLoading" />
-  <div v-else>
+  <main v-else>
     <p>accounts</p>
-  </div>
+  </main>
 </template>
 
 <style></style>

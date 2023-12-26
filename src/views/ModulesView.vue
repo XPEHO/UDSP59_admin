@@ -3,6 +3,7 @@ import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
 import ModuleCard from '@/components/ModuleCard.vue';
+import { Module } from '@/models/Module';
 
 const dataStore = useDataStore()
 
@@ -15,22 +16,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="modules-view">
-    <Loader v-if="isLoading" />
-    <ModuleCard v-else v-for="[id, module] in dataStore.modules" :id="id" :module="module" />
+  <Loader v-if="isLoading" />
+  <main v-else>
+    <ModuleCard v-for="[id, module] in dataStore.modules" :id="id" :module="module" />
+    <ModuleCard v-for="i in 10" id="epSoxnoj0aqJJ5ORenzE"
+      :module="(dataStore.getModules.get('epSoxnoj0aqJJ5ORenzE') as Module)" />
   </main>
 </template>
 
-<style>
-main.modules-view {
-  padding: 1rem 1rem 2rem 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 1.5rem;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-}
-</style>
+<style></style>

@@ -56,29 +56,31 @@ body {
 
 /* GENERAL STYLES */
 
-.title-text {
+.title-style {
   font-size: 30pt;
   font-weight: bold;
 }
 
-.subtitle-text {
+.subtitle-style {
   font-size: 20pt;
   font-weight: 500;
   color: var(--color-tertiary);
 }
 
-.input-text {
+.input-style {
   font-size: 15pt;
   font-weight: 400;
   border: none;
-  border-bottom: 1px solid var(--color-primary);
+  border-bottom: 1px solid var(--color-background);
+  color: var(--color-background);
+  background: none;
   line-height: 1.5;
 }
 
-.input-text:focus {
+.input-style:focus {
   outline: none;
 }
 
-.input-text::placeholder {
-  color: var(--color-primary);
+.input-style::placeholder {
+  color: var(--color-background);
 }
