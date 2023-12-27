@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 
+// Display the loader after 500ms
 onMounted(() => {
   const loader: HTMLElement | null = document.querySelector(".loader");
 

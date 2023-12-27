@@ -22,12 +22,14 @@ export const useUserStore = defineStore('userStore', {
         isLoggedIn: (state: UserState) => state.loggedIn,
     },
     actions: {
+        // ------------------------------- RESET LOCAL USER -------------------------------
         reset() {
             this.user = { email: '' };
             this.admin = false;
             this.loggedIn = false;
         },
 
+        // ------------------------------- SWITCH CONNEXION -------------------------------
         logout() {
             signOut(auth)
                 .then((result) => {

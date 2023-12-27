@@ -7,14 +7,21 @@ import ModulePartCard from '@/components/ModulePartCard.vue';
 import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
 import type { ModulePart } from '@/models/ModulePart';
 
+// Get the datas store
 const dataStore = useDataStore()
+
+// Get the route
 const route = useRoute();
 
+// Load module from firebase before to display the view
 const isLoading = ref(true);
 onMounted(async () => {
   await dataStore.loadModuleFromFirebase(route.params.id as string);
   isLoading.value = false;
 });
+
+// Get module parts
+const moduleParts = dataStore.module.parts;
 
 </script>
 
@@ -26,7 +33,7 @@ onMounted(async () => {
     <InputModuleAttribute attribute="icon" label="Icône :" type="text" />
     <h2 class="subtitle-style">Parties du module :</h2>
     <div class="module-part-list">
-      <ModulePartCard v-for="(modulePart, index) in dataStore.module.parts" :id="(route.params.id as string)"
+      <ModulePartCard v-for="(modulePart, index) in moduleParts" :id="(route.params.id as string)"
         :modulePart="modulePart" :index="index" />
     </div>
   </main>
