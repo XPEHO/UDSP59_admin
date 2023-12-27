@@ -12,16 +12,6 @@ const dataStore = useDataStore()
 // Get the route
 const route = useRoute()
 
-// Get current page title
-let pageTitle = dataStore.module.title
-if (route.name == 'ModulePart' || route.name == 'ModulePartElement') {
-  pageTitle += '.' + ((+route.params.part) + 1)
-
-  if (route.name == 'ModulePartElement') {
-    pageTitle += '.' + ((+route.params.element) + 1)
-  }
-}
-
 </script>
 
 <template>
@@ -38,7 +28,14 @@ if (route.name == 'ModulePart' || route.name == 'ModulePartElement') {
       <header>
         <div>
           <h1 class="title-style">UDSP59 FORMATION</h1>
-          <h2 v-if="route.path.includes('/module/')" class="subtitle-style">{{ pageTitle }}</h2>
+          <h2 v-if="route.path.includes('/module/')" class="subtitle-style">
+            {{ (route.name == 'ModulePart' || route.name == 'ModulePartElement')
+              ? (route.name == 'ModulePartElement')
+                ? dataStore.module.title + '.' + ((+route.params.part) + 1) + '.' + ((+route.params.elt) + 1)
+                : dataStore.module.title + '.' + ((+route.params.part) + 1)
+              : dataStore.module.title
+            }}
+          </h2>
         </div>
         <button class="disconnect-button" @click="userStore.logout()" title="Se déconnecter">
           <img src="../assets/svg/disconnect.svg">
