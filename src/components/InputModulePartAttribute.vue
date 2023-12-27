@@ -17,19 +17,24 @@ defineProps({
     type: String,
     required: true,
   },
+  part: {
+    type: Number,
+    required: true,
+  },
 });
 
 </script>
 
 <template>
-  <div v-if="type !== 'file'" class="input-module-attribute">
+  <div v-if="type !== 'file'" class="input-module-part-attribute">
     <label :for="attribute">{{ label }}</label>
-    <input class="input-style" :type="type" :id="attribute" :name="attribute" :value="dataStore.module[attribute]" />
+    <input class="input-style" :type="type" :id="attribute" :name="attribute"
+      :value="dataStore.module.parts[part][attribute]" />
   </div>
-  <div v-else class="input-module-attribute">
+  <div v-else class="input-module-part-attribute">
     <label :for="attribute">{{ label }}</label>
     <input class="input-style" style="display: none;" :type="type" :id="attribute" :name="attribute"
-      :value="dataStore.module[attribute]" />
+      :value="dataStore.module.parts[part][attribute]" />
     <label class="label-for-file" :for="attribute">
       <img src="../assets/upload.svg">
       <span>Choisir un fichier</span>
@@ -38,8 +43,8 @@ defineProps({
 </template>
 
 <style>
-.input-module-attribute {
-  background-color: var(--color-primary-2);
+.input-module-part-attribute {
+  background-color: var(--color-primary-3);
   color: var(--color-background);
   padding: 1.2rem 2rem;
   border-radius: 1rem;

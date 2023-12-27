@@ -25,7 +25,7 @@ defineProps({
 
 <style>
 .module-card {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-1);
   color: var(--color-background);
   padding: 1.2rem 2rem;
   border-radius: 1rem;
