@@ -67,17 +67,21 @@ export const useDataStore = defineStore('dataStore', {
             modulesSnapshot.forEach((doc) => {
                 let modulePartElements = Array<ModulePartElement>();
                 let moduleParts = Array<ModulePart>();
+                let modulePart = {} as ModulePart;
+                let modulePartElement = {} as ModulePartElement;
 
                 for (let part of doc.data().parts) {
                     for (let element of part.elements) {
-                        let modulePartElement = new ModulePartElement(element.content, element.type);
+                        modulePartElement = new ModulePartElement(element.image, element.text);
                         modulePartElements.push(modulePartElement);
                     }
-                    let modulePart = new ModulePart(part.image, part.order, part.subtitle, modulePartElements);
+                    modulePart = new ModulePart(part.image, part.order, part.subtitle, modulePartElements);
                     moduleParts.push(modulePart);
+                    modulePartElements = Array<ModulePartElement>();
                 }
                 let module = new Module(doc.data().icon, doc.data().image, doc.data().title, moduleParts);
                 this.modules.set(doc.id, module);
+                moduleParts = Array<ModulePart>();
             });
         },
         loadModuleFromFirebase: async function (id: string) {
@@ -91,16 +95,20 @@ export const useDataStore = defineStore('dataStore', {
                 // Module exists in Firestore collection, we can load it
                 let modulePartElements = Array<ModulePartElement>();
                 let moduleParts = Array<ModulePart>();
+                let modulePart = {} as ModulePart;
+                let modulePartElement = {} as ModulePartElement;
 
                 for (let part of doc.data().parts) {
                     for (let element of part.elements) {
-                        let modulePartElement = new ModulePartElement(element.content, element.type);
+                        modulePartElement = new ModulePartElement(element.image, element.text);
                         modulePartElements.push(modulePartElement);
                     }
-                    let modulePart = new ModulePart(part.image, part.order, part.subtitle, modulePartElements);
+                    modulePart = new ModulePart(part.image, part.order, part.subtitle, modulePartElements);
                     moduleParts.push(modulePart);
+                    modulePartElements = Array<ModulePartElement>();
                 }
                 this.module = new Module(doc.data().icon, doc.data().image, doc.data().title, moduleParts);
+                moduleParts = Array<ModulePart>();
             } else {
                 // Module does not exist in Firestore collection, redirect on modules page
                 router.replace({ name: 'Modules' });
