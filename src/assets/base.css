@@ -2,9 +2,10 @@
 :root {
   --color-background: #FFFFFF;
 
-  --color-primary: #251438;
-  --color-primary-light: #604d75;
-  --color-primary-lighter: #8e76a9;
+  --color-primary-1: #251438;
+  --color-primary-2: #48355E;
+  --color-primary-3: #6B5583;
+  --color-primary-4: #8e76a9;
   --color-secondary: #CF6C28;
   --color-tertiary: #BA1626;
 }
@@ -28,7 +29,7 @@ input:-webkit-autofill:active {
 
 body {
   min-height: 100vh;
-  color: var(--color-primary);
+  color: var(--color-primary-1);
   background: var(--color-background);
   transition:
     color 0.5s,

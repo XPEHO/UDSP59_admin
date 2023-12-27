@@ -7,6 +7,7 @@ import ModulesView from '../views/ModulesView.vue'
 import TipsView from '../views/TipsView.vue'
 import AccountsView from '../views/AccountsView.vue'
 import ModuleView from '../views/ModuleView.vue'
+import ModulePartView from '../views/ModulePartView.vue'
 
 // Init router
 const router = createRouter({
@@ -36,6 +37,11 @@ const router = createRouter({
           path: '/module/:id',
           name: 'Module',
           component: ModuleView
+        },
+        {
+          path: '/module/:id/:part',
+          name: 'ModulePart',
+          component: ModulePartView
         }
       ]
     },

@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ModulePart } from '../models/ModulePart';
+import { ModulePartElement } from '@/models/ModulePartElement';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 
 defineProps({
     id: {
         type: String,
         required: true,
     },
-    modulePart: {
-        type: ModulePart,
+    modulePartElt: {
+        type: ModulePartElement,
         required: true,
     },
     index: {
@@ -20,20 +22,21 @@ defineProps({
 </script>
 
 <template>
-    <div class="module-part-card">
+    <div class="module-part-elt-card">
         <div>
             <a href="javascript:void(0)" @click=""><img src="../assets/chevron-up.svg"></a>
             <a href="javascript:void(0)" @click=""><img src="../assets/chevron-down.svg"></a>
         </div>
-        <p>{{ modulePart.subtitle }}</p>
+        <p>{{ modulePartElt.text }}</p>
         <a href="javascript:void(0)" @click=""><img src="../assets/delete.svg"></a>
-        <RouterLink :to="'/module/' + id + '/' + index"><img src="../assets/chevron-right.svg"></RouterLink>
+        <RouterLink :to="'/module/' + id + '/' + route.params.part + '/' + index"><img src="../assets/chevron-right.svg">
+        </RouterLink>
     </div>
 </template>
 
 <style>
-.module-part-card {
-    background-color: var(--color-primary-2);
+.module-part-elt-card {
+    background-color: var(--color-primary-3);
     color: var(--color-background);
     padding: 1.2rem 2rem;
     border-radius: 1rem;

@@ -25,11 +25,9 @@ onMounted(async () => {
     <InputModuleAttribute attribute="image" label="Image :" type="file" />
     <InputModuleAttribute attribute="icon" label="Icône :" type="text" />
     <h2 class="subtitle-style">Parties du module :</h2>
-    <div class="module-list">
+    <div class="module-part-list">
       <ModulePartCard v-for="(modulePart, index) in dataStore.module.parts" :id="(route.params.id as string)"
         :modulePart="modulePart" :index="index" />
-      <ModulePartCard v-for="i in 10" id="epSoxnoj0aqJJ5ORenzE" :modulePart="(dataStore.getModule.parts[0] as ModulePart)"
-        :index="0" />
     </div>
   </main>
 </template>
@@ -37,10 +35,10 @@ onMounted(async () => {
 <style>
 main.module-view {
   & .subtitle-style {
-    color: var(--color-primary);
+    color: var(--color-primary-1);
   }
 
-  & .module-list {
+  & .module-part-list {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

@@ -27,7 +27,8 @@ const dataStore = useDataStore()
       <header>
         <div>
           <h1 class="title-style">UDSP59 FORMATION</h1>
-          <h2 v-if="location.name == 'Module'" class="subtitle-style">{{ dataStore.module.title }}</h2>
+          <h2 v-if="location.path.includes('/module/')" class="subtitle-style">{{
+            dataStore.module.title + (location.name == 'ModulePart' ? ('.' + ((+location.params.part) + 1)) : '') }}</h2>
         </div>
         <button class="disconnect-button" @click="userStore.logout()" title="Se déconnecter">
           <img src="../assets/disconnect.svg">
@@ -35,10 +36,11 @@ const dataStore = useDataStore()
       </header>
 
       <div class="actions">
-        <button v-if="location.name == 'Module'" class="return-button" @click="router.back()" title="Revenir en arrière">
+        <button v-if="location.path.includes('/module/')" class="return-button" @click="router.back()"
+          title="Revenir en arrière">
           <img src="../assets/chevron-left.svg">
         </button>
-        <button class="add-button" @click="" title="Ajouter">
+        <button v-if="location.name !== 'ModulePartElement'" class="add-button" @click="" title="Ajouter">
           <img src="../assets/add.svg">
         </button>
       </div>
@@ -83,7 +85,7 @@ main.page-view {
         height: 4rem;
         width: 80%;
         color: var(--color-background);
-        background: var(--color-primary);
+        background: var(--color-primary-1);
         border: none;
         border-radius: 1rem;
         cursor: pointer;
