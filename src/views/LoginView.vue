@@ -2,7 +2,7 @@
 
 import { useUserStore } from '../stores/user'
 
-// Get the stores
+// Get the user store
 const userStore = useUserStore();
 
 // Reset the store by default

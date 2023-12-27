@@ -3,8 +3,10 @@ import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
 
+// Get the datas store
 const dataStore = useDataStore()
 
+// Load tips from firebase before to display the view
 const isLoading = ref(true);
 onMounted(async () => {
   await dataStore.loadTipsFromFirebase();

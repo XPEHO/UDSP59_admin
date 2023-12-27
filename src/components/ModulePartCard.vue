@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ModulePart } from '../models/ModulePart';
 
-
+// Properties of the component
 defineProps({
     id: {
         type: String,
@@ -22,12 +22,12 @@ defineProps({
 <template>
     <div class="module-part-card">
         <div>
-            <a href="javascript:void(0)" @click=""><img src="../assets/chevron-up.svg"></a>
-            <a href="javascript:void(0)" @click=""><img src="../assets/chevron-down.svg"></a>
+            <a href="javascript:void(0)" @click=""><img src="../assets/svg/chevron-up.svg"></a>
+            <a href="javascript:void(0)" @click=""><img src="../assets/svg/chevron-down.svg"></a>
         </div>
         <p>{{ modulePart.subtitle }}</p>
-        <a href="javascript:void(0)" @click=""><img src="../assets/delete.svg"></a>
-        <RouterLink :to="'/module/' + id + '/' + index"><img src="../assets/chevron-right.svg"></RouterLink>
+        <a href="javascript:void(0)" @click=""><img src="../assets/svg/delete.svg"></a>
+        <RouterLink :to="'/module/' + id + '/' + index"><img src="../assets/svg/chevron-right.svg"></RouterLink>
     </div>
 </template>
 
