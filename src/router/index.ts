@@ -8,6 +8,7 @@ import TipsView from '../views/TipsView.vue'
 import AccountsView from '../views/AccountsView.vue'
 import ModuleView from '../views/ModuleView.vue'
 import ModulePartView from '../views/ModulePartView.vue'
+import ModulePartElementView from '../views/ModulePartElementView.vue'
 
 // Init router
 const router = createRouter({
@@ -42,6 +43,11 @@ const router = createRouter({
           path: '/module/:id/:part',
           name: 'ModulePart',
           component: ModulePartView
+        },
+        {
+          path: '/module/:id/:part/:elt',
+          name: 'ModulePartElement',
+          component: ModulePartElementView
         }
       ]
     },

@@ -20,9 +20,6 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
-// Get module parts
-const moduleParts = dataStore.module.parts;
-
 </script>
 
 <template>
@@ -33,7 +30,10 @@ const moduleParts = dataStore.module.parts;
     <InputModuleAttribute attribute="icon" label="Icône :" type="text" />
     <h2 class="subtitle-style">Parties du module :</h2>
     <div class="module-part-list">
-      <ModulePartCard v-for="(modulePart, index) in moduleParts" :id="(route.params.id as string)"
+      <div v-if="dataStore.module.parts.length == 0">
+        <p>Aucune partie pour le moment.</p>
+      </div>
+      <ModulePartCard v-else v-for="(modulePart, index) in dataStore.module.parts" :id="(route.params.id as string)"
         :modulePart="modulePart" :index="index" />
     </div>
   </main>

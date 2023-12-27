@@ -19,9 +19,6 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
-// Get module part elements
-const modulePartElts = dataStore.module.parts[+route.params.part].elements;
-
 </script>
 
 <template>
@@ -31,8 +28,11 @@ const modulePartElts = dataStore.module.parts[+route.params.part].elements;
     <InputModulePartAttribute attribute="image" label="Image :" type="file" :part="+(route.params.part as string)" />
     <h2 class="subtitle-style">Elements de la partie du module :</h2>
     <div class="module-part-elt-list">
-      <ModulePartElementCard v-for="(modulePartElt, index) in modulePartElts" :id="(route.params.id as string)"
-        :modulePartElt="modulePartElt" :index="index" />
+      <div v-if="dataStore.module.parts[+route.params.part].elements.length == 0">
+        <p>Aucun éléments pour le moment.</p>
+      </div>
+      <ModulePartElementCard v-else v-for="(modulePartElt, index) in dataStore.module.parts[+route.params.part].elements"
+        :id="(route.params.id as string)" :modulePartElt="modulePartElt" :index="index" />
     </div>
   </main>
 </template>
