@@ -3,10 +3,11 @@ import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
 import ModuleCard from '@/components/ModuleCard.vue';
-import { Module } from '@/models/Module';
 
+// Get the datas store
 const dataStore = useDataStore()
 
+// Load modules from firebase before to display the view
 const isLoading = ref(true);
 onMounted(async () => {
   await dataStore.loadModulesFromFirebase();

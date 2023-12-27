@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { db, firebaseApp } from '../firebase';
-import { collection, query, getDocs, getDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { collection, getDocs, getDoc, doc } from 'firebase/firestore';
 import { Tip } from '../models/Tip';
 import { Account } from '../models/Account';
 import { Module } from '../models/Module';
@@ -29,6 +29,7 @@ export const useDataStore = defineStore('dataStore', {
         getModule: (state: DataState) => state.module,
     },
     actions: {
+        // ------------------------------- RESET LOCAL DATAS -------------------------------
         reset() {
             this.tips = Array<Tip>();
             this.accounts = Array<Account>();
@@ -36,6 +37,13 @@ export const useDataStore = defineStore('dataStore', {
             this.module = {} as Module;
         },
 
+        // ------------------------------ CHANGE LOCAL DATAS ------------------------------
+        // TODO
+
+        // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------
+        // TODO
+
+        // ------------------------- LOAD FIREBASE DATAS TO LOCAL -------------------------
         loadTipsFromFirebase: async function () {
             // Reset
             this.reset();

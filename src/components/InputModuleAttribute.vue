@@ -2,8 +2,10 @@
 
 import { useDataStore } from '@/stores/data';
 
+// Get the datas store
 const dataStore = useDataStore()
 
+// Properties of the component
 defineProps({
   attribute: {
     type: String,
@@ -31,7 +33,7 @@ defineProps({
     <input class="input-style" style="display: none;" :type="type" :id="attribute" :name="attribute"
       :value="dataStore.module[attribute]" />
     <label class="label-for-file" :for="attribute">
-      <img src="../assets/upload.svg">
+      <img src="../assets/svg/upload.svg">
       <span>Choisir un fichier</span>
     </label>
   </div>

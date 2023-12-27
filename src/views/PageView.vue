@@ -5,11 +5,22 @@ import { useUserStore } from '../stores/user'
 import { useDataStore } from '../stores/data'
 import router from '@/router';
 
-const location = useRoute()
-
 // Get the stores
 const userStore = useUserStore()
 const dataStore = useDataStore()
+
+// Get the route
+const route = useRoute()
+
+// Get current page title
+let pageTitle = dataStore.module.title
+if (route.name == 'ModulePart' || route.name == 'ModulePartElement') {
+  pageTitle += '.' + ((+route.params.part) + 1)
+
+  if (route.name == 'ModulePartElement') {
+    pageTitle += '.' + ((+route.params.element) + 1)
+  }
+}
 
 </script>
 
@@ -27,21 +38,20 @@ const dataStore = useDataStore()
       <header>
         <div>
           <h1 class="title-style">UDSP59 FORMATION</h1>
-          <h2 v-if="location.path.includes('/module/')" class="subtitle-style">{{
-            dataStore.module.title + (location.name == 'ModulePart' ? ('.' + ((+location.params.part) + 1)) : '') }}</h2>
+          <h2 v-if="route.path.includes('/module/')" class="subtitle-style">{{ pageTitle }}</h2>
         </div>
         <button class="disconnect-button" @click="userStore.logout()" title="Se déconnecter">
-          <img src="../assets/disconnect.svg">
+          <img src="../assets/svg/disconnect.svg">
         </button>
       </header>
 
       <div class="actions">
-        <button v-if="location.path.includes('/module/')" class="return-button" @click="router.back()"
+        <button v-if="route.path.includes('/module/')" class="return-button" @click="router.back()"
           title="Revenir en arrière">
-          <img src="../assets/chevron-left.svg">
+          <img src="../assets/svg/chevron-left.svg">
         </button>
-        <button v-if="location.name !== 'ModulePartElement'" class="add-button" @click="" title="Ajouter">
-          <img src="../assets/add.svg">
+        <button v-if="route.name !== 'ModulePartElement'" class="add-button" @click="" title="Ajouter">
+          <img src="../assets/svg/add.svg">
         </button>
       </div>
       <router-view></router-view>
