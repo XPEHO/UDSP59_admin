@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { Module } from '../models/Module';
+import { useDataStore } from '@/stores/data';
+
+// Get the datas store
+const dataStore = useDataStore();
 
 // Properties of the component
 defineProps({
@@ -18,7 +22,7 @@ defineProps({
 <template>
   <div class="module-card">
     <p>{{ module.title }}</p>
-    <a href="javascript:void(0)" @click=""><img src="../assets/svg/delete.svg"></a>
+    <a href="javascript:void(0)" @click="dataStore.deleteModule(id)"><img src="../assets/svg/delete.svg"></a>
     <RouterLink :to="'/module/' + id"><img src="../assets/svg/chevron-right.svg"></RouterLink>
   </div>
 </template>

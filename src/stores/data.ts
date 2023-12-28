@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { db } from '../firebase';
-import { collection, getDocs, getDoc, doc, setDoc, addDoc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Tip } from '../models/Tip';
 import { Account } from '../models/Account';
 import { Module } from '../models/Module';
@@ -13,7 +13,8 @@ interface DataState {
   accounts: Array<Account>
   modules: Map<string, Module>
   module: Module
-  newModules: Array<Module>
+  modulesToAdd: Map<string, Module>
+  modulesToDelete: Array<string>
   toSave: boolean
 }
 
@@ -23,7 +24,8 @@ export const useDataStore = defineStore('dataStore', {
     accounts: Array<Account>(),
     modules: new Map<string, Module>(),
     module: {} as Module,
-    newModules: Array<Module>(),
+    modulesToAdd: new Map<string, Module>(),
+    modulesToDelete: Array<string>(),
     toSave: false,
   }),
   getters: {
@@ -31,7 +33,8 @@ export const useDataStore = defineStore('dataStore', {
     getAccounts: (state: DataState) => state.accounts,
     getModules: (state: DataState) => state.modules,
     getModule: (state: DataState) => state.module,
-    getNewModules: (state: DataState) => state.newModules,
+    getModulesToAdd: (state: DataState) => state.modulesToAdd,
+    getModulesToDelete: (state: DataState) => state.modulesToDelete,
     needToSave: (state: DataState) => state.toSave,
   },
   actions: {
@@ -41,21 +44,42 @@ export const useDataStore = defineStore('dataStore', {
       this.accounts = Array<Account>();
       this.modules = new Map<string, Module>();
       this.module = {} as Module;
-      this.newModules = Array<Module>();
+      this.modulesToAdd = new Map<string, Module>();
+      this.modulesToDelete = Array<string>();
       this.toSave = false;
     },
 
     // ------------------------------ CHANGE LOCAL DATAS ------------------------------
     addModule(module: Module) {
       this.modules.set(module.title, module);
-      this.newModules.push(module);
+      this.modulesToAdd.set(module.title, module);
       this.toSave = true;
+    },
+    deleteModule(id: string) {
+      if (this.modules.has(id)) {
+        this.modules.delete(id);
+        if (this.modulesToAdd.has(id)) {
+          this.modulesToAdd.delete(id);
+        } else {
+          this.modulesToDelete.push(id);
+        }
+      }
+      if (this.modulesToAdd.size == 0 && this.modulesToDelete.length == 0) {
+        this.toSave = false;
+      } else {
+        this.toSave = true;
+      }
     },
 
     // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------
     saveModulesToFirebase: async function () {
-      for (let module of this.newModules) {
+      // Add new modules
+      for (let module of this.modulesToAdd.values()) {
         await addDoc(collection(db, "modules"), module.toJsonObject());
+      }
+      // Delete modules
+      for (let id of this.modulesToDelete) {
+        await deleteDoc(doc(db, "modules", id));
       }
       this.loadModulesFromFirebase();
     },
