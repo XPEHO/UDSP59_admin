@@ -13,4 +13,13 @@ export class Module {
         this.title = title;
         this.parts = parts;
     }
+
+    toJsonObject() {
+        return {
+            icon: this.icon,
+            image: this.image,
+            title: this.title,
+            parts: this.parts.map((part) => part.toJsonObject())
+        }
+    }
 }

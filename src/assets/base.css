@@ -85,3 +85,24 @@ body {
 .input-style::placeholder {
   color: var(--color-background);
 }
+
+.button-style {
+  background: none;
+  font-size: 15pt;
+  padding: 1rem 2rem;
+  border: 2px solid var(--color-primary-1);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--color-primary-1);
+}
+
+.button-style-hook,
+.button-style:hover {
+  background: var(--color-primary-1);
+  font-size: 15pt;
+  padding: 1rem 2rem;
+  border: 2px solid var(--color-primary-1);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--color-background);
+}

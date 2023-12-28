@@ -7,4 +7,11 @@ export class ModulePartElement {
         this.image = image;
         this.text = text;
     }
+
+    toJsonObject() {
+        return {
+            image: this.image,
+            text: this.text
+        }
+    }
 }
