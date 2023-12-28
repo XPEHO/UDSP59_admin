@@ -38,7 +38,9 @@ export const useDataStore = defineStore('dataStore', {
         },
 
         // ------------------------------ CHANGE LOCAL DATAS ------------------------------
-        // TODO
+        addModule(module: Module) {
+            this.modules.set(module.title, module);
+        },
 
         // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------
         // TODO

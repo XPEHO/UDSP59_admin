@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import { useUserStore } from '../stores/user'
 import { useDataStore } from '../stores/data'
 import router from '@/router';
+import AddPopup from '@/components/AddPopup.vue';
 
 // Get the stores
 const userStore = useUserStore()
@@ -53,6 +54,7 @@ const route = useRoute()
       </div>
       <router-view></router-view>
     </section>
+    <AddPopup />
   </main>
 </template>
 
