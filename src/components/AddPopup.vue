@@ -33,11 +33,15 @@ function hide() {
 
 function show() {
   (document.querySelector('.popup-wrapper') as HTMLElement).style.display = 'flex';
+  if (route.name == 'Modules') {
+    (document.querySelector('.input-module-attribute #title') as HTMLInputElement).focus();
+  }
 }
 
 function addModule() {
   let module = new Module("", "", (document.querySelector('.input-module-attribute #title') as HTMLInputElement).value, Array<ModulePart>());
   dataStore.addModule(module);
+  (document.querySelector('.input-module-attribute #title') as HTMLInputElement).value = "";
   hide();
 }
 
