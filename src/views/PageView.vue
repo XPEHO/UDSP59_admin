@@ -13,6 +13,11 @@ const dataStore = useDataStore()
 // Get the route
 const route = useRoute()
 
+// Save to firebase
+function saveToFirebase() {
+  if (route.name == 'Modules') dataStore.saveModulesToFirebase()
+}
+
 </script>
 
 <template>
@@ -48,8 +53,12 @@ const route = useRoute()
           title="Revenir en arrière">
           <img src="../assets/svg/chevron-left.svg">
         </button>
-        <button v-if="route.name !== 'ModulePartElement'" class="add-button" @click="" title="Ajouter">
+        <button v-if="route.name !== 'ModulePartElement'" class="add-button" title="Ajouter">
           <img src="../assets/svg/add.svg">
+        </button>
+        <button v-if="dataStore.needToSave" class="save-button" @click="saveToFirebase" title="Enregistrer">
+          <img src="../assets/svg/save.svg">
+          <p>Enregistrer</p>
         </button>
       </div>
       <router-view></router-view>
@@ -165,20 +174,28 @@ main.page-view {
       gap: 1rem;
 
       & .add-button,
-      & .return-button {
+      & .return-button,
+      & .save-button {
         background-color: var(--color-secondary);
         border: none;
-        border-radius: 50%;
+        border-radius: 1.25rem;
         padding: 0.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        color: var(--color-background);
+        gap: 0.5rem;
+        font-size: 15pt;
 
         & img {
           height: 1.5rem;
           width: 1.5rem;
         }
+      }
+
+      & .save-button {
+        padding: 0.5rem 0.75rem;
       }
     }
 
