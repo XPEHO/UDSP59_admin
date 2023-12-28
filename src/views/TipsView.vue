@@ -2,6 +2,7 @@
 import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
+import TipCard from '@/components/TipCard.vue';
 
 // Get the datas store
 const dataStore = useDataStore()
@@ -17,7 +18,15 @@ onMounted(async () => {
 
 <template>
   <Loader v-if="isLoading" />
-  <main v-else>
-    <p>tips</p>
+  <main class="tips-view" v-else>
+    <TipCard v-for="[id, tip] in dataStore.tips" :id="id" :tip="tip" />
   </main>
 </template>
+
+<style>
+main.tips-view {
+  flex-flow: row wrap !important;
+  justify-content: space-evenly !important;
+  row-gap: 2rem !important;
+}
+</style>
