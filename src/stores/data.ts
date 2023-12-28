@@ -9,8 +9,8 @@ import { ModulePartElement } from '../models/ModulePartElement';
 import router from '@/router';
 
 interface DataState {
-  tips: Array<Tip>
-  accounts: Array<Account>
+  tips: Map<string, Tip>
+  accounts: Map<string, Account>
   modules: Map<string, Module>
   module: Module
   modulesToAdd: Map<string, Module>
@@ -20,8 +20,8 @@ interface DataState {
 
 export const useDataStore = defineStore('dataStore', {
   state: () => ({
-    tips: Array<Tip>(),
-    accounts: Array<Account>(),
+    tips: new Map<string, Tip>(),
+    accounts: new Map<string, Account>(),
     modules: new Map<string, Module>(),
     module: {} as Module,
     modulesToAdd: new Map<string, Module>(),
@@ -40,8 +40,8 @@ export const useDataStore = defineStore('dataStore', {
   actions: {
     // ------------------------------- RESET LOCAL DATAS -------------------------------
     reset() {
-      this.tips = Array<Tip>();
-      this.accounts = Array<Account>();
+      this.tips = new Map<string, Tip>();
+      this.accounts = new Map<string, Account>();
       this.modules = new Map<string, Module>();
       this.module = {} as Module;
       this.modulesToAdd = new Map<string, Module>();
@@ -84,6 +84,7 @@ export const useDataStore = defineStore('dataStore', {
       this.loadModulesFromFirebase();
     },
     saveModuleToFirebase: async function (id: string) {
+      // Replace existing module
       await setDoc(doc(db, "modules", id), this.module.toJsonObject());
       this.loadModuleFromFirebase(id);
     },
@@ -97,7 +98,7 @@ export const useDataStore = defineStore('dataStore', {
       // Add to array
       tipsSnapshot.forEach((doc) => {
         let tip = new Tip(doc.data().content);
-        this.tips.push(tip);
+        this.tips.set(doc.id, tip);
       });
     },
     loadAccountsFromFirebase: async function () {
@@ -108,7 +109,7 @@ export const useDataStore = defineStore('dataStore', {
       // Add to array
       accountsSnapshot.forEach((doc) => {
         let account = new Account(doc.data().mail, doc.data().admin);
-        this.accounts.push(account);
+        this.accounts.set(doc.id, account);
       });
     },
     loadModulesFromFirebase: async function () {
