@@ -33,7 +33,7 @@ function focusTextarea(event: MouseEvent) {
     <textarea name="content">{{ tip.content }}</textarea>
     <div>
       <a href="javascript:void(0)" @click="focusTextarea"><img src="../assets/svg/edit.svg"></a>
-      <a href="javascript:void(0)" @click=""><img src="../assets/svg/delete.svg"></a>
+      <a href="javascript:void(0)" @click="dataStore.deleteTip(id)"><img src="../assets/svg/delete.svg"></a>
     </div>
   </div>
 </template>
