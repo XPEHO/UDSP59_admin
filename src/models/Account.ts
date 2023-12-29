@@ -6,4 +6,11 @@ export class Account {
         this.mail = mail;
         this.admin = admin;
     }
+
+    toJsonObject() {
+        return {
+            mail: this.mail,
+            admin: this.admin,
+        }
+    }
 }

@@ -97,6 +97,13 @@ export const useDataStore = defineStore('dataStore', {
       await setDoc(doc(db, "modules", id), this.module.toJsonObject());
       this.loadModuleFromFirebase(id);
     },
+    saveTipsToFirebase: async function () {
+      // Add new tips
+      for (let tip of this.tipsToAdd.values()) {
+        await addDoc(collection(db, "tips"), tip.toJsonObject());
+      }
+      this.loadTipsFromFirebase();
+    },
 
     // ------------------------- LOAD FIREBASE DATAS TO LOCAL -------------------------
     loadTipsFromFirebase: async function () {
