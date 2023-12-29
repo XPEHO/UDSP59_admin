@@ -17,6 +17,7 @@ interface DataState {
   modulesToDelete: Array<string>
   tipsToAdd: Map<string, Tip>
   tipsToDelete: Array<string>
+  tipsToEdit: Map<string, Tip>
   toSave: boolean
 }
 
@@ -30,6 +31,7 @@ export const useDataStore = defineStore('dataStore', {
     modulesToDelete: Array<string>(),
     tipsToAdd: new Map<string, Tip>(),
     tipsToDelete: Array<string>(),
+    tipsToEdit: new Map<string, Tip>(),
     toSave: false,
   }),
   getters: {
@@ -41,6 +43,7 @@ export const useDataStore = defineStore('dataStore', {
     getModulesToDelete: (state: DataState) => state.modulesToDelete,
     getTipsToAdd: (state: DataState) => state.tipsToAdd,
     getTipsToDelete: (state: DataState) => state.tipsToDelete,
+    getTipsToEdit: (state: DataState) => state.tipsToEdit,
     needToSave: (state: DataState) => state.toSave,
   },
   actions: {
@@ -54,6 +57,7 @@ export const useDataStore = defineStore('dataStore', {
       this.modulesToDelete = Array<string>();
       this.tipsToAdd = new Map<string, Tip>();
       this.tipsToDelete = Array<string>();
+      this.tipsToEdit = new Map<string, Tip>();
       this.toSave = false;
     },
 
@@ -92,11 +96,27 @@ export const useDataStore = defineStore('dataStore', {
           this.tipsToDelete.push(id);
         }
       }
-      if (this.tipsToAdd.size == 0 && this.tipsToDelete.length == 0) {
+      if (this.tipsToAdd.size == 0 && this.tipsToDelete.length == 0 && this.tipsToEdit.size == 0) {
         this.toSave = false;
       } else {
         this.toSave = true;
       }
+    },
+    editTip(id: string, tip: Tip) {
+      if (this.tipsToAdd.has(id)) {
+        this.tipsToAdd.set(id, tip);
+      } else if (this.tips.has(id)) {
+        this.tipsToEdit.set(id, tip);
+        if (this.tips.get(id)?.content === tip.content) {
+          this.tipsToEdit.delete(id);
+        }
+      }
+      if (this.tipsToAdd.size == 0 && this.tipsToDelete.length == 0 && this.tipsToEdit.size == 0) {
+        this.toSave = false;
+      } else {
+        this.toSave = true;
+      }
+
     },
 
     // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------
@@ -124,6 +144,10 @@ export const useDataStore = defineStore('dataStore', {
       // Delete tips
       for (let id of this.tipsToDelete) {
         await deleteDoc(doc(db, "tips", id));
+      }
+      // Edit tips
+      for (let [id, tip] of this.tipsToEdit) {
+        await setDoc(doc(db, "tips", id), tip.toJsonObject());
       }
       this.loadTipsFromFirebase();
     },
