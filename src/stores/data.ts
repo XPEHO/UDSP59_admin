@@ -15,6 +15,7 @@ interface DataState {
   module: Module
   modulesToAdd: Map<string, Module>
   modulesToDelete: Array<string>
+  tipsToAdd: Map<string, Tip>
   toSave: boolean
 }
 
@@ -26,6 +27,7 @@ export const useDataStore = defineStore('dataStore', {
     module: {} as Module,
     modulesToAdd: new Map<string, Module>(),
     modulesToDelete: Array<string>(),
+    tipsToAdd: new Map<string, Tip>(),
     toSave: false,
   }),
   getters: {
@@ -35,6 +37,7 @@ export const useDataStore = defineStore('dataStore', {
     getModule: (state: DataState) => state.module,
     getModulesToAdd: (state: DataState) => state.modulesToAdd,
     getModulesToDelete: (state: DataState) => state.modulesToDelete,
+    getTipsToAdd: (state: DataState) => state.tipsToAdd,
     needToSave: (state: DataState) => state.toSave,
   },
   actions: {
@@ -46,6 +49,7 @@ export const useDataStore = defineStore('dataStore', {
       this.module = {} as Module;
       this.modulesToAdd = new Map<string, Module>();
       this.modulesToDelete = Array<string>();
+      this.tipsToAdd = new Map<string, Tip>();
       this.toSave = false;
     },
 
@@ -69,6 +73,11 @@ export const useDataStore = defineStore('dataStore', {
       } else {
         this.toSave = true;
       }
+    },
+    addTip(tip: Tip) {
+      this.tips.set(tip.content, tip);
+      this.tipsToAdd.set(tip.content, tip);
+      this.toSave = true;
     },
 
     // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------

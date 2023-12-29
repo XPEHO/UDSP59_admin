@@ -26,12 +26,12 @@ const router = createRouter({
         },
         {
           path: '/tips',
-          name: 'Astuces',
+          name: 'Tips',
           component: TipsView
         },
         {
           path: '/accounts',
-          name: 'Comptes',
+          name: 'Accounts',
           component: AccountsView
         },
         {
