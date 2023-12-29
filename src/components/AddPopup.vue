@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { Module } from '@/models/Module';
 import { ModulePart } from '@/models/ModulePart';
+import { Tip } from '@/models/Tip';
 
 // Get the route
 const route = useRoute()
@@ -14,7 +15,7 @@ const route = useRoute()
 const dataStore = useDataStore()
 
 onMounted(() => {
-  const popupWrapper = document.querySelector('.popup-wrapper') as HTMLElement;
+  const popupWrapper = document.querySelector('.popup-add-wrapper') as HTMLElement;
   const addButton = document.querySelector('.add-button') as HTMLElement;
   hide();
   popupWrapper?.addEventListener('click', (e) => {
@@ -28,28 +29,35 @@ onMounted(() => {
 });
 
 function hide() {
-  (document.querySelector('.popup-wrapper') as HTMLElement).style.display = 'none';
+  (document.querySelector('.popup-add-wrapper') as HTMLElement).style.display = 'none';
 }
 
 function show() {
-  (document.querySelector('.popup-wrapper') as HTMLElement).style.display = 'flex';
+  (document.querySelector('.popup-add-wrapper') as HTMLElement).style.display = 'flex';
   if (route.name == 'Modules') {
-    (document.querySelector('.input-module-attribute #title') as HTMLInputElement).focus();
+    (document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement).focus();
   }
 }
 
 function addModule() {
-  let module = new Module("", "", (document.querySelector('.input-module-attribute #title') as HTMLInputElement).value, Array<ModulePart>());
+  let module = new Module("", "", (document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement).value, Array<ModulePart>());
   dataStore.addModule(module);
-  (document.querySelector('.input-module-attribute #title') as HTMLInputElement).value = "";
+  (document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement).value = "";
+  hide();
+}
+
+function addTip() {
+  let tip = new Tip((document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement).value);
+  dataStore.addTip(tip);
+  (document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement).value = "";
   hide();
 }
 
 </script>
 
 <template>
-  <div class="popup-wrapper">
-    <div v-if="route.name == 'Modules'" class="popup">
+  <div class="popup-add-wrapper">
+    <div v-if="route.name == 'Modules'" class="popup-add popup-modules">
       <h3 class="subtitle-style">Ajouter un module</h3>
       <InputModuleAttribute attribute="title" label="Titre :" type="text" />
       <div class="popup-buttons">
@@ -57,11 +65,19 @@ function addModule() {
         <button class="button-style-hook" @click="addModule">Ajouter</button>
       </div>
     </div>
+    <div v-if="route.name == 'Tips'" class="popup-add popup-tips">
+      <h3 class="subtitle-style">Ajouter une astuce</h3>
+      <textarea name="content"></textarea>
+      <div class="popup-buttons">
+        <button class="button-style" @click="hide">Annuler</button>
+        <button class="button-style-hook" @click="addTip">Ajouter</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <style>
-.popup-wrapper {
+.popup-add-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -72,7 +88,7 @@ function addModule() {
   justify-content: center;
   align-items: center;
 
-  & .popup {
+  & .popup-add {
     width: 30rem;
     height: 20rem;
     background-color: var(--color-background);
@@ -89,6 +105,21 @@ function addModule() {
 
     & .input-module-attribute {
       background-color: var(--color-primary-1);
+    }
+
+    & textarea {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      border: 1px solid var(--color-primary-1);
+      background: none;
+      color: var(--color-primary-1);
+      font-size: 14pt;
+      margin: 1rem 0;
+
+      &:focus {
+        outline: none;
+      }
     }
 
     & .popup-buttons {
