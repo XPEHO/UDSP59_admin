@@ -4,4 +4,10 @@ export class Tip {
     constructor(content: string) {
         this.content = content;
     }
+
+    toJsonObject() {
+        return {
+            content: this.content,
+        }
+    }
 }
