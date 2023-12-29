@@ -16,6 +16,7 @@ const route = useRoute()
 // Save to firebase
 function saveToFirebase() {
   if (route.name == 'Modules') dataStore.saveModulesToFirebase()
+  if (route.name == 'Tips') dataStore.saveTipsToFirebase()
 }
 
 </script>
