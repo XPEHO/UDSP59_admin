@@ -16,6 +16,7 @@ interface DataState {
   modulesToAdd: Map<string, Module>
   modulesToDelete: Array<string>
   tipsToAdd: Map<string, Tip>
+  tipsToDelete: Array<string>
   toSave: boolean
 }
 
@@ -28,6 +29,7 @@ export const useDataStore = defineStore('dataStore', {
     modulesToAdd: new Map<string, Module>(),
     modulesToDelete: Array<string>(),
     tipsToAdd: new Map<string, Tip>(),
+    tipsToDelete: Array<string>(),
     toSave: false,
   }),
   getters: {
@@ -38,6 +40,7 @@ export const useDataStore = defineStore('dataStore', {
     getModulesToAdd: (state: DataState) => state.modulesToAdd,
     getModulesToDelete: (state: DataState) => state.modulesToDelete,
     getTipsToAdd: (state: DataState) => state.tipsToAdd,
+    getTipsToDelete: (state: DataState) => state.tipsToDelete,
     needToSave: (state: DataState) => state.toSave,
   },
   actions: {
@@ -50,6 +53,7 @@ export const useDataStore = defineStore('dataStore', {
       this.modulesToAdd = new Map<string, Module>();
       this.modulesToDelete = Array<string>();
       this.tipsToAdd = new Map<string, Tip>();
+      this.tipsToDelete = Array<string>();
       this.toSave = false;
     },
 
@@ -79,6 +83,21 @@ export const useDataStore = defineStore('dataStore', {
       this.tipsToAdd.set(tip.content, tip);
       this.toSave = true;
     },
+    deleteTip(id: string) {
+      if (this.tips.has(id)) {
+        this.tips.delete(id);
+        if (this.tipsToAdd.has(id)) {
+          this.tipsToAdd.delete(id);
+        } else {
+          this.tipsToDelete.push(id);
+        }
+      }
+      if (this.tipsToAdd.size == 0 && this.tipsToDelete.length == 0) {
+        this.toSave = false;
+      } else {
+        this.toSave = true;
+      }
+    },
 
     // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------
     saveModulesToFirebase: async function () {
@@ -101,6 +120,10 @@ export const useDataStore = defineStore('dataStore', {
       // Add new tips
       for (let tip of this.tipsToAdd.values()) {
         await addDoc(collection(db, "tips"), tip.toJsonObject());
+      }
+      // Delete tips
+      for (let id of this.tipsToDelete) {
+        await deleteDoc(doc(db, "tips", id));
       }
       this.loadTipsFromFirebase();
     },
