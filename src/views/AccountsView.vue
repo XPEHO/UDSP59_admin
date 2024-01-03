@@ -2,6 +2,7 @@
 import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
+import AccountCard from '@/components/AccountCard.vue';
 
 // Get the datas store
 const dataStore = useDataStore()
@@ -17,9 +18,15 @@ onMounted(async () => {
 
 <template>
   <Loader v-if="isLoading" />
-  <main v-else>
-    <p>accounts</p>
+  <main class="accounts-view" v-else>
+    <AccountCard v-for="[id, account] in dataStore.accounts" :id="id" :account="account" />
   </main>
 </template>
 
-<style></style>
+<style>
+main.accounts-view {
+  flex-flow: row wrap !important;
+  justify-content: space-evenly !important;
+  row-gap: 2rem !important;
+}
+</style>
