@@ -3,7 +3,7 @@
 import { useDataStore } from '@/stores/data';
 import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
 import { useRoute } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Module } from '@/models/Module';
 import { ModulePart } from '@/models/ModulePart';
 import { Tip } from '@/models/Tip';
@@ -23,9 +23,12 @@ onMounted(() => {
       hide();
     }
   });
-  addButton?.addEventListener('click', () => {
-    show();
-  });
+  addButton?.addEventListener('click', show);
+});
+
+onBeforeUnmount(() => {
+  const addButton = document.querySelector('.add-button') as HTMLElement;
+  addButton?.removeEventListener('click', show);
 });
 
 function hide() {
