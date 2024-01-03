@@ -8,6 +8,8 @@
   --color-primary-4: #8e76a9;
   --color-secondary: #CF6C28;
   --color-tertiary: #BA1626;
+
+  --color-primary-transparent: rgba(69, 46, 97, 0.3);
 }
 
 *,
