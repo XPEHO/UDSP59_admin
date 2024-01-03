@@ -211,6 +211,18 @@ main.page-view {
       width: 100%;
       height: 100%;
       overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: var(--color-primary-transparent);
+        border-radius: 0.25rem;
+      }
     }
   }
 }
