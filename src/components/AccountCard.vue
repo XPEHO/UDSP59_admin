@@ -30,7 +30,8 @@ function focusInput(event: MouseEvent) {
 <template>
     <div class="account-card">
         <a class="admin-switch" href="javascript:void(0)" @click="account.admin = !account.admin" title="Changer le rôle">
-            <img :src="account.admin ? '/src/assets/svg/user-admin.svg' : '/src/assets/svg/user.svg'">
+            <img v-if="account.admin" src="../assets/fireman-helmet.png">
+            <img src="../assets/svg/user.svg">
         </a>
         <input name="mail" @input="" :value="account.mail" />
         <div>
@@ -44,7 +45,7 @@ function focusInput(event: MouseEvent) {
 .account-card {
     background-color: var(--color-primary-1);
     color: var(--color-background);
-    padding: 1.5rem;
+    padding: 2.2rem 1.5rem 1.5rem 1.5rem;
     border-radius: 1rem;
     width: 20rem;
     box-shadow: 3px 3px 10px 1px rgb(0 0 0 / 40%);
@@ -60,10 +61,18 @@ function focusInput(event: MouseEvent) {
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        position: relative;
 
-        & img {
+        & img[src*="user"] {
             height: 4rem;
             width: 4rem;
+        }
+
+        & img[src*="fireman"] {
+            height: 2.8rem;
+            width: 3.3rem;
+            position: absolute;
+            top: -1.6rem;
         }
     }
 
