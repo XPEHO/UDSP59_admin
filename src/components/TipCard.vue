@@ -64,6 +64,18 @@ function focusTextarea(event: MouseEvent) {
     background: none;
     color: var(--color-background);
 
+    &::-webkit-scrollbar {
+      width: 0.25rem;
+      height: 0.25rem;
+      border-radius: 0.12rem;
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 0.12rem;
+    }
+
     &:focus {
       outline: none;
     }
