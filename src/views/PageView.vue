@@ -64,7 +64,7 @@ function saveToFirebase() {
       </div>
       <router-view></router-view>
     </section>
-    <AddPopup />
+    <AddPopup v-if="route.name !== 'ModulePartElement'" />
   </main>
 </template>
 
