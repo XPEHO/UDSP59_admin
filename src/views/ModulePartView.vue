@@ -19,11 +19,15 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
+// Get current part
+function getCurrentPart() {
+  let currentPartIndex = +route.params.part;
+  return dataStore.module.parts[currentPartIndex];
+}
+
 // Check if elements array is empty
 function isElementsArrayEmpty(): boolean {
-  let currentPartIndex = +route.params.part;
-  let currentPart = dataStore.module.parts[currentPartIndex];
-  return currentPart.elements.length == 0;
+  return getCurrentPart().elements.length == 0;
 }
 
 </script>
@@ -38,7 +42,7 @@ function isElementsArrayEmpty(): boolean {
       <div v-if="isElementsArrayEmpty()">
         <p>Aucun éléments pour le moment.</p>
       </div>
-      <ModulePartElementCard v-else v-for="(modulePartElt, index) in dataStore.module.parts[+route.params.part].elements"
+      <ModulePartElementCard v-else v-for="(modulePartElt, index) in getCurrentPart().elements"
         :id="(route.params.id as string)" :modulePartElt="modulePartElt" :index="index" />
     </div>
   </main>

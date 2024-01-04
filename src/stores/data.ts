@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { db } from '../firebase';
-import { collection, getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { modulesCollection, tipsCollection, accountsCollection, usersCollection } from '../firebase';
+import { getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Account } from '../models/Account';
 import { Module } from '../models/Module';
 import { ModulePart } from '../models/ModulePart';
@@ -151,36 +151,36 @@ export const useDataStore = defineStore('dataStore', {
     saveModulesToFirebase: async function () {
       // Add new modules
       for (let module of this.modulesToAdd.values()) {
-        await addDoc(collection(db, "modules"), module.toJsonObject());
+        await addDoc(modulesCollection, module.toJsonObject());
       }
       // Delete modules
       for (let id of this.modulesToDelete) {
-        await deleteDoc(doc(db, "modules", id));
+        await deleteDoc(doc(modulesCollection, id));
       }
       this.loadModulesFromFirebase();
     },
     saveModuleToFirebase: async function (id: string) {
       // Replace existing module
-      await setDoc(doc(db, "modules", id), this.module.toJsonObject());
+      await setDoc(doc(modulesCollection, id), this.module.toJsonObject());
       this.loadModuleFromFirebase(id);
     },
     saveTipsToFirebase: async function () {
       // Replace existing tips
-      await setDoc(doc(db, "tips", "tips"), { content: this.tipsEdited });
+      await setDoc(doc(tipsCollection, "tips"), { content: this.tipsEdited });
       this.loadTipsFromFirebase();
     },
     saveAccountsToFirebase: async function () {
       // Add new tips
       for (let account of this.accountsToAdd.values()) {
-        await addDoc(collection(db, "accounts"), account.toJsonObject());
+        await addDoc(accountsCollection, account.toJsonObject());
       }
       // Delete tips
       for (let id of this.accountsToDelete) {
-        await deleteDoc(doc(db, "accounts", id));
+        await deleteDoc(doc(accountsCollection, id));
       }
       // Edit tips
       for (let [id, account] of this.accountsToEdit) {
-        await setDoc(doc(db, "accounts", id), account.toJsonObject());
+        await setDoc(doc(accountsCollection, id), account.toJsonObject());
       }
       this.loadAccountsFromFirebase();
     },
@@ -190,7 +190,7 @@ export const useDataStore = defineStore('dataStore', {
       // Reset
       this.reset();
       // Get from firebase
-      const tipsSnapshot = await getDoc(doc(db, "tips", "tips"));
+      const tipsSnapshot = await getDoc(doc(tipsCollection, "tips"));
       // Add to array
       if (tipsSnapshot.exists()) {
         for (let tip of tipsSnapshot.data().content) {
@@ -206,7 +206,7 @@ export const useDataStore = defineStore('dataStore', {
       // Reset
       this.reset();
       // Get from firebase
-      const accountsSnapshot = await getDocs(collection(db, "users"));
+      const accountsSnapshot = await getDocs(usersCollection);
       // Add to array
       accountsSnapshot.forEach((doc) => {
         let account = new Account(doc.data().mail, doc.data().admin);
@@ -217,7 +217,7 @@ export const useDataStore = defineStore('dataStore', {
       // Reset
       this.reset();
       // Get from firebase
-      const modulesSnapshot = await getDocs(collection(db, "modules"));
+      const modulesSnapshot = await getDocs(modulesCollection);
       // Add to array
       modulesSnapshot.forEach((doc) => {
         let modulePartElements = Array<ModulePartElement>();
@@ -243,7 +243,7 @@ export const useDataStore = defineStore('dataStore', {
       // Reset
       this.reset();
       // Get from firebase
-      const moduleSnapshot = await getDoc(doc(db, "modules", id));
+      const moduleSnapshot = await getDoc(doc(modulesCollection, id));
       // Check if module exists in Firestore collection
       if (moduleSnapshot.exists()) {
         let doc = moduleSnapshot;
