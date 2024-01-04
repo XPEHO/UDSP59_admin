@@ -19,6 +19,13 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
+// Check if elements array is empty
+function isElementsArrayEmpty(): boolean {
+  let currentPartIndex = +route.params.part;
+  let currentPart = dataStore.module.parts[currentPartIndex];
+  return currentPart.elements.length == 0;
+}
+
 </script>
 
 <template>
@@ -28,7 +35,7 @@ onMounted(async () => {
     <InputModulePartAttribute attribute="image" label="Image :" type="file" :part="+(route.params.part as string)" />
     <h2 class="subtitle-style">Elements de la partie du module :</h2>
     <div class="module-part-elt-list">
-      <div v-if="dataStore.module.parts[+route.params.part].elements.length == 0">
+      <div v-if="isElementsArrayEmpty()">
         <p>Aucun éléments pour le moment.</p>
       </div>
       <ModulePartElementCard v-else v-for="(modulePartElt, index) in dataStore.module.parts[+route.params.part].elements"

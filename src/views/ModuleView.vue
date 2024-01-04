@@ -20,6 +20,12 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
+
+// Check if parts array is empty
+function isPartsArrayEmpty(): boolean {
+  return dataStore.module.parts.length == 0;
+}
+
 </script>
 
 <template>
@@ -30,7 +36,7 @@ onMounted(async () => {
     <InputModuleAttribute attribute="icon" label="Icône :" type="text" />
     <h2 class="subtitle-style">Parties du module :</h2>
     <div class="module-part-list">
-      <div v-if="dataStore.module.parts.length == 0">
+      <div v-if="isPartsArrayEmpty()">
         <p>Aucune partie pour le moment.</p>
       </div>
       <ModulePartCard v-else v-for="(modulePart, index) in dataStore.module.parts" :id="(route.params.id as string)"
