@@ -6,7 +6,6 @@ import { useRoute } from 'vue-router';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Module } from '@/models/Module';
 import { ModulePart } from '@/models/ModulePart';
-import { Tip } from '@/models/Tip';
 
 // Get the route
 const route = useRoute()
@@ -50,7 +49,7 @@ function addModule() {
 }
 
 function addTip() {
-  let tip = new Tip((document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement).value);
+  let tip = (document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement).value;
   dataStore.addTip(tip);
   (document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement).value = "";
   hide();

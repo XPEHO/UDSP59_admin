@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { db } from '../firebase';
 import { collection, getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { Tip } from '../models/Tip';
 import { Account } from '../models/Account';
 import { Module } from '../models/Module';
 import { ModulePart } from '../models/ModulePart';
@@ -9,29 +8,31 @@ import { ModulePartElement } from '../models/ModulePartElement';
 import router from '@/router';
 
 interface DataState {
-  tips: Map<string, Tip>
+  tips: Array<string>
   accounts: Map<string, Account>
   modules: Map<string, Module>
   module: Module
   modulesToAdd: Map<string, Module>
   modulesToDelete: Array<string>
-  tipsToAdd: Map<string, Tip>
-  tipsToDelete: Array<string>
-  tipsToEdit: Map<string, Tip>
+  accountsToAdd: Map<string, Account>
+  accountsToDelete: Array<string>
+  accountsToEdit: Map<string, Account>
+  tipsEdited: Array<string>
   toSave: boolean
 }
 
 export const useDataStore = defineStore('dataStore', {
   state: () => ({
-    tips: new Map<string, Tip>(),
+    tips: Array<string>(),
     accounts: new Map<string, Account>(),
     modules: new Map<string, Module>(),
     module: {} as Module,
     modulesToAdd: new Map<string, Module>(),
     modulesToDelete: Array<string>(),
-    tipsToAdd: new Map<string, Tip>(),
-    tipsToDelete: Array<string>(),
-    tipsToEdit: new Map<string, Tip>(),
+    accountsToAdd: new Map<string, Account>(),
+    accountsToDelete: Array<string>(),
+    accountsToEdit: new Map<string, Account>(),
+    tipsEdited: Array<string>(),
     toSave: false,
   }),
   getters: {
@@ -41,23 +42,25 @@ export const useDataStore = defineStore('dataStore', {
     getModule: (state: DataState) => state.module,
     getModulesToAdd: (state: DataState) => state.modulesToAdd,
     getModulesToDelete: (state: DataState) => state.modulesToDelete,
-    getTipsToAdd: (state: DataState) => state.tipsToAdd,
-    getTipsToDelete: (state: DataState) => state.tipsToDelete,
-    getTipsToEdit: (state: DataState) => state.tipsToEdit,
+    getAccountsToAdd: (state: DataState) => state.accountsToAdd,
+    getAccountsToDelete: (state: DataState) => state.accountsToDelete,
+    getAccountsToEdit: (state: DataState) => state.accountsToEdit,
+    getTipsEdited: (state: DataState) => state.tipsEdited,
     needToSave: (state: DataState) => state.toSave,
   },
   actions: {
     // ------------------------------- RESET LOCAL DATAS -------------------------------
     reset() {
-      this.tips = new Map<string, Tip>();
+      this.tips = Array<string>();
       this.accounts = new Map<string, Account>();
       this.modules = new Map<string, Module>();
       this.module = {} as Module;
       this.modulesToAdd = new Map<string, Module>();
       this.modulesToDelete = Array<string>();
-      this.tipsToAdd = new Map<string, Tip>();
-      this.tipsToDelete = Array<string>();
-      this.tipsToEdit = new Map<string, Tip>();
+      this.accountsToAdd = new Map<string, Account>();
+      this.accountsToDelete = Array<string>();
+      this.accountsToEdit = new Map<string, Account>();
+      this.tipsEdited = Array<string>();
       this.toSave = false;
     },
 
@@ -82,36 +85,61 @@ export const useDataStore = defineStore('dataStore', {
         this.toSave = true;
       }
     },
-    addTip(tip: Tip) {
-      this.tips.set(tip.content, tip);
-      this.tipsToAdd.set(tip.content, tip);
+    addTip(tip: string) {
+      this.tipsEdited.push(tip);
+      this.toSave = true;
+      if (JSON.stringify(this.tips) !== JSON.stringify(this.tipsEdited)) {
+        this.toSave = true;
+      } else {
+        this.toSave = false;
+      }
+    },
+    deleteTip(index: number) {
+      this.tipsEdited.splice(index, 1);
+      if (JSON.stringify(this.tips) !== JSON.stringify(this.tipsEdited)) {
+        this.toSave = true;
+      } else {
+        this.toSave = false;
+      }
+    },
+    editTip(index: number, tip: string) {
+      this.tipsEdited[index] = tip;
+      if (JSON.stringify(this.tips) !== JSON.stringify(this.tipsEdited)) {
+        this.toSave = true;
+      } else {
+        this.toSave = false;
+      }
+    },
+    addAccount(account: Account) {
+      this.accounts.set(account.mail, account);
+      this.accountsToAdd.set(account.mail, account);
       this.toSave = true;
     },
-    deleteTip(id: string) {
-      if (this.tips.has(id)) {
-        this.tips.delete(id);
-        if (this.tipsToAdd.has(id)) {
-          this.tipsToAdd.delete(id);
+    deleteAccount(id: string) {
+      if (this.accounts.has(id)) {
+        this.accounts.delete(id);
+        if (this.accountsToAdd.has(id)) {
+          this.accountsToAdd.delete(id);
         } else {
-          this.tipsToDelete.push(id);
+          this.accountsToDelete.push(id);
         }
       }
-      if (this.tipsToAdd.size == 0 && this.tipsToDelete.length == 0 && this.tipsToEdit.size == 0) {
+      if (this.accountsToAdd.size == 0 && this.accountsToDelete.length == 0 && this.accountsToEdit.size == 0) {
         this.toSave = false;
       } else {
         this.toSave = true;
       }
     },
-    editTip(id: string, tip: Tip) {
-      if (this.tipsToAdd.has(id)) {
-        this.tipsToAdd.set(id, tip);
-      } else if (this.tips.has(id)) {
-        this.tipsToEdit.set(id, tip);
-        if (this.tips.get(id)?.content === tip.content) {
-          this.tipsToEdit.delete(id);
+    editAccount(id: string, account: Account) {
+      if (this.accountsToAdd.has(id)) {
+        this.accountsToAdd.set(id, account);
+      } else if (this.accounts.has(id)) {
+        this.accountsToEdit.set(id, account);
+        if (this.accounts.get(id)?.mail === account.mail) {
+          this.accountsToEdit.delete(id);
         }
       }
-      if (this.tipsToAdd.size == 0 && this.tipsToDelete.length == 0 && this.tipsToEdit.size == 0) {
+      if (this.accountsToAdd.size == 0 && this.accountsToDelete.length == 0 && this.accountsToEdit.size == 0) {
         this.toSave = false;
       } else {
         this.toSave = true;
@@ -137,19 +165,24 @@ export const useDataStore = defineStore('dataStore', {
       this.loadModuleFromFirebase(id);
     },
     saveTipsToFirebase: async function () {
+      // Replace existing tips
+      await setDoc(doc(db, "tips", "tips"), { content: this.tipsEdited });
+      this.loadTipsFromFirebase();
+    },
+    saveAccountsToFirebase: async function () {
       // Add new tips
-      for (let tip of this.tipsToAdd.values()) {
-        await addDoc(collection(db, "tips"), tip.toJsonObject());
+      for (let account of this.accountsToAdd.values()) {
+        await addDoc(collection(db, "accounts"), account.toJsonObject());
       }
       // Delete tips
-      for (let id of this.tipsToDelete) {
-        await deleteDoc(doc(db, "tips", id));
+      for (let id of this.accountsToDelete) {
+        await deleteDoc(doc(db, "accounts", id));
       }
       // Edit tips
-      for (let [id, tip] of this.tipsToEdit) {
-        await setDoc(doc(db, "tips", id), tip.toJsonObject());
+      for (let [id, account] of this.accountsToEdit) {
+        await setDoc(doc(db, "accounts", id), account.toJsonObject());
       }
-      this.loadTipsFromFirebase();
+      this.loadAccountsFromFirebase();
     },
 
     // ------------------------- LOAD FIREBASE DATAS TO LOCAL -------------------------
@@ -157,12 +190,17 @@ export const useDataStore = defineStore('dataStore', {
       // Reset
       this.reset();
       // Get from firebase
-      const tipsSnapshot = await getDocs(collection(db, "tips"));
+      const tipsSnapshot = await getDoc(doc(db, "tips", "tips"));
       // Add to array
-      tipsSnapshot.forEach((doc) => {
-        let tip = new Tip(doc.data().content);
-        this.tips.set(doc.id, tip);
-      });
+      if (tipsSnapshot.exists()) {
+        for (let tip of tipsSnapshot.data().content) {
+          this.tips.push(tip);
+          this.tipsEdited.push(tip);
+        }
+      } else {
+        // Tips does not exist in Firestore collection, redirect on modules page
+        router.replace({ name: 'Modules' });
+      }
     },
     loadAccountsFromFirebase: async function () {
       // Reset
