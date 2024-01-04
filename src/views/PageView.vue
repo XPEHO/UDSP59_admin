@@ -19,6 +19,15 @@ function saveToFirebase() {
   if (route.name == 'Tips') dataStore.saveTipsToFirebase()
 }
 
+// Get page name using the route
+function getPageName() {
+  let pageName = ''
+  if ((route.name as String).includes('Module')) pageName += dataStore.module.title
+  if ((route.name as String).includes('ModulePart')) pageName += '.' + ((+route.params.part) + 1)
+  if ((route.name as String).includes('ModulePartElement')) pageName += '.' + ((+route.params.elt) + 1)
+  return pageName
+}
+
 </script>
 
 <template>
@@ -36,12 +45,7 @@ function saveToFirebase() {
         <div>
           <h1 class="title-style">UDSP59 FORMATION</h1>
           <h2 v-if="route.path.includes('/module/')" class="subtitle-style">
-            {{ (route.name == 'ModulePart' || route.name == 'ModulePartElement')
-              ? (route.name == 'ModulePartElement')
-                ? dataStore.module.title + '.' + ((+route.params.part) + 1) + '.' + ((+route.params.elt) + 1)
-                : dataStore.module.title + '.' + ((+route.params.part) + 1)
-              : dataStore.module.title
-            }}
+            {{ getPageName() }}
           </h2>
         </div>
         <button class="disconnect-button" @click="userStore.logout()" title="Se déconnecter">
