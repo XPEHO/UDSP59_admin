@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <Loader v-if="isLoading" />
   <main class="tips-view" v-else>
-    <TipCard v-for="[id, tip] in dataStore.tips" :id="id" :tip="tip" />
+    <TipCard v-for="(tip, index) in dataStore.tipsEdited" :index="index" :tip="tip" />
   </main>
 </template>
 

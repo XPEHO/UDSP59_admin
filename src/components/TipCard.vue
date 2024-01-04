@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Tip } from '@/models/Tip';
 import { useDataStore } from '@/stores/data';
 
 // Get the datas store
@@ -7,12 +6,12 @@ const dataStore = useDataStore();
 
 // Properties of the component
 defineProps({
-  id: {
-    type: String,
+  index: {
+    type: Number,
     required: true,
   },
   tip: {
-    type: Tip,
+    type: String,
     required: true,
   },
 });
@@ -31,10 +30,10 @@ function focusTextarea(event: MouseEvent) {
 <template>
   <div class="tip-card">
     <textarea name="content"
-      @input="dataStore.editTip(id, new Tip(($event.target as HTMLTextAreaElement).value))">{{ tip.content }}</textarea>
+      @input="dataStore.editTip(index, ($event.target as HTMLTextAreaElement).value)">{{ tip }}</textarea>
     <div>
       <a href="javascript:void(0)" @click="focusTextarea"><img src="../assets/svg/edit.svg"></a>
-      <a href="javascript:void(0)" @click="dataStore.deleteTip(id)"><img src="../assets/svg/delete.svg"></a>
+      <a href="javascript:void(0)" @click="dataStore.deleteTip(index)"><img src="../assets/svg/delete.svg"></a>
     </div>
   </div>
 </template>
