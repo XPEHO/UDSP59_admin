@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { provider, auth, db } from '../firebase';
+import { provider, auth, usersCollection } from '../firebase';
 import { signInWithPopup, signOut } from 'firebase/auth'
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import router from '@/router';
@@ -46,7 +46,7 @@ export const useUserStore = defineStore('userStore', {
                     this.user = result.user as { email: string };
                     // Check if user is connected with Googleata
                     if (this.user.email !== '') {
-                        const q = query(collection(db, "users"), where("mail", "==", this.user.email));
+                        const q = query(usersCollection, where("mail", "==", this.user.email));
                         const snapshot = await getDocs(q);
                         // Check if user email exists in Firestore collection
                         if (!snapshot.empty) {
