@@ -20,6 +20,5 @@ const db = getFirestore(firebaseApp)
 const usersCollection = collection(db, 'users')
 const modulesCollection = collection(db, 'modules')
 const tipsCollection = collection(db, 'tips')
-const accountsCollection = collection(db, 'accounts')
 
-export { firebaseApp, provider, auth, db, usersCollection, modulesCollection, tipsCollection, accountsCollection }
+export { firebaseApp, provider, auth, db, usersCollection, modulesCollection, tipsCollection }

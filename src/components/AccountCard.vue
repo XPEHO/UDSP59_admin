@@ -17,6 +17,7 @@ defineProps({
     },
 });
 
+// Function to focus the end of the input
 function focusInput(event: MouseEvent) {
     // Get the textarea and focus it
     let input = (event.target as HTMLElement).closest('.account-card')?.querySelector('input') as HTMLInputElement;
@@ -25,18 +26,29 @@ function focusInput(event: MouseEvent) {
     input.setSelectionRange(input.value.length, input.value.length);
 }
 
+// Template functions
+function deleteAccount(id: string) {
+    dataStore.deleteAccount(id);
+}
+
+function editAccount(id: string, attribute: string, value: any) {
+    dataStore.editAccount(id, attribute, value);
+}
+
 </script>
 
 <template>
     <div class="account-card">
-        <a class="admin-switch" href="javascript:void(0)" @click="account.admin = !account.admin" title="Changer le rôle">
+        <a class="admin-switch" href="javascript:void(0)" @click="editAccount(id, 'admin', !account.admin)"
+            title="Changer le rôle">
             <img v-if="account.admin" src="../assets/fireman-helmet.png">
             <img src="../assets/svg/user.svg">
         </a>
-        <input name="mail" @input="" :value="account.mail" />
+        <input class="input-style" type="email" name="mail"
+            @input="editAccount(id, 'mail', ($event.target as HTMLInputElement).value)" :value="account.mail" />
         <div>
             <a href="javascript:void(0)" @click="focusInput"><img src="../assets/svg/edit.svg"></a>
-            <a href="javascript:void(0)" @click=""><img src="../assets/svg/delete.svg"></a>
+            <a href="javascript:void(0)" @click="deleteAccount(id)"><img src="../assets/svg/delete.svg"></a>
         </div>
     </div>
 </template>
@@ -76,19 +88,9 @@ function focusInput(event: MouseEvent) {
         }
     }
 
-    & input {
-        font-size: 14pt;
-        width: 100%;
-        height: 100%;
-        resize: none;
-        border: none;
-        background: none;
-        color: var(--color-background);
+    & .input-style {
         text-align: center;
-
-        &:focus {
-            outline: none;
-        }
+        border: none;
     }
 
     & div {

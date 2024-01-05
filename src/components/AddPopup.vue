@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Module } from '@/models/Module';
 import { ModulePart } from '@/models/ModulePart';
+import { Account } from '@/models/Account';
 
 // Get the route
 const route = useRoute()
@@ -14,8 +15,8 @@ const route = useRoute()
 const dataStore = useDataStore()
 
 onMounted(() => {
-  const popupWrapper = document.querySelector('.popup-add-wrapper') as HTMLElement;
-  const addButton = document.querySelector('.add-button') as HTMLElement;
+  let popupWrapper = document.querySelector('.popup-add-wrapper') as HTMLElement;
+  let addButton = document.querySelector('.add-button') as HTMLElement;
   hide();
   popupWrapper?.addEventListener('click', (e) => {
     if (e.target === popupWrapper) {
@@ -26,32 +27,45 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  const addButton = document.querySelector('.add-button') as HTMLElement;
+  let addButton = document.querySelector('.add-button') as HTMLElement;
   addButton?.removeEventListener('click', show);
 });
 
 function hide() {
-  (document.querySelector('.popup-add-wrapper') as HTMLElement).style.display = 'none';
+  let popupWrapper = document.querySelector('.popup-add-wrapper') as HTMLElement;
+  popupWrapper.style.display = 'none';
 }
 
 function show() {
-  (document.querySelector('.popup-add-wrapper') as HTMLElement).style.display = 'flex';
+  let popupWrapper = document.querySelector('.popup-add-wrapper') as HTMLElement;
+  popupWrapper.style.display = 'flex';
   if (route.name == 'Modules') {
-    (document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement).focus();
+    let titleInput = document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement;
+    titleInput.focus();
   }
 }
 
 function addModule() {
-  let module = new Module("", "", (document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement).value, Array<ModulePart>());
+  let titleInput = document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement;
+  let module = new Module("", "", titleInput.value, Array<ModulePart>());
   dataStore.addModule(module);
-  (document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement).value = "";
+  titleInput.value = "";
   hide();
 }
 
 function addTip() {
-  let tip = (document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement).value;
+  let tipInput = document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement;
+  let tip = tipInput.value;
   dataStore.addTip(tip);
-  (document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement).value = "";
+  tipInput.value = "";
+  hide();
+}
+
+function addAccount() {
+  let mailInput = document.querySelector('.popup-add.popup-accounts input[name="mail"]') as HTMLInputElement;
+  let account = new Account(mailInput.value, false);
+  dataStore.addAccount(account);
+  mailInput.value = "";
   hide();
 }
 
@@ -73,6 +87,17 @@ function addTip() {
       <div class="popup-buttons">
         <button class="button-style" @click="hide">Annuler</button>
         <button class="button-style-hook" @click="addTip">Ajouter</button>
+      </div>
+    </div>
+    <div v-if="route.name == 'Accounts'" class="popup-add popup-accounts">
+      <h3 class="subtitle-style">Ajouter un compte</h3>
+      <div class="input-account-mail">
+        <label for="mail">Email :</label>
+        <input class="input-style" type="email" name="mail">
+      </div>
+      <div class="popup-buttons">
+        <button class="button-style" @click="hide">Annuler</button>
+        <button class="button-style-hook" @click="addAccount">Ajouter</button>
       </div>
     </div>
   </div>
@@ -121,6 +146,29 @@ function addTip() {
 
       &:focus {
         outline: none;
+      }
+    }
+
+    & .input-account-mail {
+      background-color: var(--color-primary-1);
+      color: var(--color-background);
+      padding: 1.2rem 2rem;
+      border-radius: 1rem;
+      width: 100%;
+      box-shadow: 3px 3px 10px 1px rgb(0 0 0 / 40%);
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1.5rem;
+
+      & label {
+        font-size: 15pt;
+        white-space: nowrap;
+      }
+
+      & .input-style {
+        width: 100%;
       }
     }
 

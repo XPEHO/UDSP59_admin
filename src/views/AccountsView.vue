@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <Loader v-if="isLoading" />
   <main class="accounts-view" v-else>
-    <AccountCard v-for="[id, account] in dataStore.accounts" :id="id" :account="account" />
+    <AccountCard v-for="[id, account] in dataStore.accountsEdited" :id="id" :account="account" />
   </main>
 </template>
 

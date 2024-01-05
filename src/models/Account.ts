@@ -13,4 +13,8 @@ export class Account {
             admin: this.admin,
         }
     }
+
+    equals(account: Account) {
+        return this.mail === account.mail && this.admin === account.admin;
+    }
 }

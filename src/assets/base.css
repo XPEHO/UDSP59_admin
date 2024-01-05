@@ -26,7 +26,7 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px var(--color-background) inset !important;
+  -webkit-box-shadow: 0 0 0 30px var(--color-background) inset;
 }
 
 body {
@@ -78,14 +78,24 @@ body {
   color: var(--color-background);
   background: none;
   line-height: 1.5;
-}
 
-.input-style:focus {
-  outline: none;
-}
+  &::placeholder {
+    color: var(--color-background);
+  }
 
-.input-style::placeholder {
-  color: var(--color-background);
+  &:focus {
+    outline: none;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-text-fill-color: #ffffff;
+    -webkit-box-shadow: 0 0 0 30px var(--color-primary-1) inset;
+  }
+
+
 }
 
 .button-style {
