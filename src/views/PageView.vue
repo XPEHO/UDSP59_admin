@@ -18,6 +18,15 @@ function saveToFirebase() {
   if (route.name == 'Modules') dataStore.saveModulesToFirebase()
   if (route.name == 'Tips') dataStore.saveTipsToFirebase()
   if (route.name == 'Accounts') dataStore.saveAccountsToFirebase()
+  if (route.path.includes('/module/')) dataStore.saveModuleToFirebase(route.params.id as string)
+}
+
+// Reload the page
+function reload() {
+  if (route.name == 'Modules') dataStore.loadModulesFromFirebase()
+  if (route.name == 'Tips') dataStore.loadTipsFromFirebase()
+  if (route.name == 'Accounts') dataStore.loadAccountsFromFirebase()
+  if (route.path.includes('/module/')) dataStore.loadModuleFromFirebase(route.params.id as string)
 }
 
 // Get breadcrumbs using the route params
@@ -54,16 +63,18 @@ function getBreadcrumbs() {
       </header>
 
       <div class="actions">
-        <button v-if="route.path.includes('/module/')" class="return-button" @click="router.back()"
-          title="Revenir en arrière">
+        <button v-if="route.path.includes('/module/')" @click="router.back()" title="Revenir en arrière">
           <img src="../assets/svg/chevron-left.svg">
         </button>
         <button v-if="route.name !== 'ModulePartElement'" class="add-button" title="Ajouter">
           <img src="../assets/svg/add.svg">
         </button>
-        <button v-if="dataStore.needToSave" class="save-button" @click="saveToFirebase" title="Enregistrer">
+        <button v-if="dataStore.needToSave" class="changes-button" @click="saveToFirebase" title="Enregistrer">
           <img src="../assets/svg/save.svg">
           <p>Enregistrer</p>
+        </button>
+        <button v-if="dataStore.needToSave" class="changes-button" @click="reload" title="Réinitialiser">
+          <p>Réinitialiser</p>
         </button>
       </div>
       <router-view></router-view>
@@ -178,9 +189,7 @@ main.page-view {
       flex-flow: row nowrap;
       gap: 1rem;
 
-      & .add-button,
-      & .return-button,
-      & .save-button {
+      & button {
         background-color: var(--color-secondary);
         border: none;
         border-radius: 1.25rem;
@@ -199,7 +208,7 @@ main.page-view {
         }
       }
 
-      & .save-button {
+      & .changes-button {
         padding: 0.5rem 0.75rem;
       }
     }
