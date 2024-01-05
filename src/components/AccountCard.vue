@@ -44,6 +44,7 @@ function editAccount(id: string, attribute: string, value: any) {
             <img v-if="account.admin" src="../assets/fireman-helmet.png">
             <img src="../assets/svg/user.svg">
         </a>
+        <p>{{ account.admin ? 'Administrateur' : 'Éditeur' }}</p>
         <input class="input-style" type="email" name="mail"
             @input="editAccount(id, 'mail', ($event.target as HTMLInputElement).value)" :value="account.mail" />
         <div>
@@ -65,7 +66,6 @@ function editAccount(id: string, attribute: string, value: any) {
     flex-flow: column nowrap;
     justify-content: space-between;
     align-items: center;
-    gap: 1.5rem;
     position: relative;
 
     & .admin-switch {
@@ -74,6 +74,7 @@ function editAccount(id: string, attribute: string, value: any) {
         align-items: center;
         cursor: pointer;
         position: relative;
+        margin-bottom: 0.5rem;
 
         & img[src*="user"] {
             height: 4rem;
@@ -91,6 +92,7 @@ function editAccount(id: string, attribute: string, value: any) {
     & .input-style {
         text-align: center;
         border: none;
+        margin: 1.5rem 0;
     }
 
     & div {
