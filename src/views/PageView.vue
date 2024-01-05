@@ -17,6 +17,7 @@ const route = useRoute()
 function saveToFirebase() {
   if (route.name == 'Modules') dataStore.saveModulesToFirebase()
   if (route.name == 'Tips') dataStore.saveTipsToFirebase()
+  if (route.name == 'Accounts') dataStore.saveAccountsToFirebase()
 }
 
 // Get breadcrumbs using the route params

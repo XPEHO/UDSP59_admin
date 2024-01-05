@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { modulesCollection, tipsCollection, accountsCollection, usersCollection } from '../firebase';
+import { areMapsEqual } from '../utilities/functions';
+import { modulesCollection, tipsCollection, usersCollection } from '../firebase';
 import { getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Account } from '../models/Account';
 import { Module } from '../models/Module';
@@ -14,9 +15,7 @@ interface DataState {
   module: Module
   modulesToAdd: Map<string, Module>
   modulesToDelete: Array<string>
-  accountsToAdd: Map<string, Account>
-  accountsToDelete: Array<string>
-  accountsToEdit: Map<string, Account>
+  accountsEdited: Map<string, Account>
   tipsEdited: Array<string>
   toSave: boolean
 }
@@ -29,9 +28,7 @@ export const useDataStore = defineStore('dataStore', {
     module: {} as Module,
     modulesToAdd: new Map<string, Module>(),
     modulesToDelete: Array<string>(),
-    accountsToAdd: new Map<string, Account>(),
-    accountsToDelete: Array<string>(),
-    accountsToEdit: new Map<string, Account>(),
+    accountsEdited: new Map<string, Account>(),
     tipsEdited: Array<string>(),
     toSave: false,
   }),
@@ -42,9 +39,7 @@ export const useDataStore = defineStore('dataStore', {
     getModule: (state: DataState) => state.module,
     getModulesToAdd: (state: DataState) => state.modulesToAdd,
     getModulesToDelete: (state: DataState) => state.modulesToDelete,
-    getAccountsToAdd: (state: DataState) => state.accountsToAdd,
-    getAccountsToDelete: (state: DataState) => state.accountsToDelete,
-    getAccountsToEdit: (state: DataState) => state.accountsToEdit,
+    getAccountsEdited: (state: DataState) => state.accountsEdited,
     getTipsEdited: (state: DataState) => state.tipsEdited,
     needToSave: (state: DataState) => state.toSave,
   },
@@ -57,20 +52,21 @@ export const useDataStore = defineStore('dataStore', {
       this.module = {} as Module;
       this.modulesToAdd = new Map<string, Module>();
       this.modulesToDelete = Array<string>();
-      this.accountsToAdd = new Map<string, Account>();
-      this.accountsToDelete = Array<string>();
-      this.accountsToEdit = new Map<string, Account>();
+      this.accountsEdited = new Map<string, Account>();
       this.tipsEdited = Array<string>();
       this.toSave = false;
     },
 
     // ------------------------------ CHANGE LOCAL DATAS ------------------------------
     addModule(module: Module) {
+      // Change local datas to add module
       this.modules.set(module.title, module);
       this.modulesToAdd.set(module.title, module);
+      // Notice that there is something to save
       this.toSave = true;
     },
     deleteModule(id: string) {
+      // Change local datas to delete module
       if (this.modules.has(id)) {
         this.modules.delete(id);
         if (this.modulesToAdd.has(id)) {
@@ -79,6 +75,7 @@ export const useDataStore = defineStore('dataStore', {
           this.modulesToDelete.push(id);
         }
       }
+      // Check if there is something to save
       if (this.modulesToAdd.size == 0 && this.modulesToDelete.length == 0) {
         this.toSave = false;
       } else {
@@ -86,8 +83,9 @@ export const useDataStore = defineStore('dataStore', {
       }
     },
     addTip(tip: string) {
+      // Change local datas to add tip
       this.tipsEdited.push(tip);
-      this.toSave = true;
+      // Check if there is something to save
       if (JSON.stringify(this.tips) !== JSON.stringify(this.tipsEdited)) {
         this.toSave = true;
       } else {
@@ -95,7 +93,9 @@ export const useDataStore = defineStore('dataStore', {
       }
     },
     deleteTip(index: number) {
+      // Change local datas to delete tip
       this.tipsEdited.splice(index, 1);
+      // Check if there is something to save
       if (JSON.stringify(this.tips) !== JSON.stringify(this.tipsEdited)) {
         this.toSave = true;
       } else {
@@ -103,7 +103,9 @@ export const useDataStore = defineStore('dataStore', {
       }
     },
     editTip(index: number, tip: string) {
+      // Change local datas to edit tip
       this.tipsEdited[index] = tip;
+      // Check if there is something to save
       if (JSON.stringify(this.tips) !== JSON.stringify(this.tipsEdited)) {
         this.toSave = true;
       } else {
@@ -111,40 +113,46 @@ export const useDataStore = defineStore('dataStore', {
       }
     },
     addAccount(account: Account) {
-      this.accounts.set(account.mail, account);
-      this.accountsToAdd.set(account.mail, account);
-      this.toSave = true;
+      // Check if mail is already used
+      let mailAlreadyUsed = false;
+      for (let accountCheck of this.accountsEdited.values()) {
+        if (accountCheck.mail === account.mail) {
+          mailAlreadyUsed = true;
+        }
+      }
+      // Change local datas to add account
+      if (!mailAlreadyUsed) {
+        this.accountsEdited.set(account.mail, account);
+        // Check if there is something to save
+        if (!areMapsEqual(this.accounts, this.accountsEdited)) {
+          this.toSave = true;
+        } else {
+          this.toSave = false;
+        }
+      }
     },
     deleteAccount(id: string) {
-      if (this.accounts.has(id)) {
-        this.accounts.delete(id);
-        if (this.accountsToAdd.has(id)) {
-          this.accountsToAdd.delete(id);
-        } else {
-          this.accountsToDelete.push(id);
-        }
-      }
-      if (this.accountsToAdd.size == 0 && this.accountsToDelete.length == 0 && this.accountsToEdit.size == 0) {
-        this.toSave = false;
-      } else {
+      // Change local datas to delete account
+      this.accountsEdited.delete(id);
+      // Check if there is something to save
+      if (!areMapsEqual(this.accounts, this.accountsEdited)) {
         this.toSave = true;
+      } else {
+        this.toSave = false;
       }
     },
-    editAccount(id: string, account: Account) {
-      if (this.accountsToAdd.has(id)) {
-        this.accountsToAdd.set(id, account);
-      } else if (this.accounts.has(id)) {
-        this.accountsToEdit.set(id, account);
-        if (this.accounts.get(id)?.mail === account.mail) {
-          this.accountsToEdit.delete(id);
-        }
+    editAccount(id: string, attribute: string, value: any) {
+      // Change local datas to edit account
+      let account = this.accountsEdited.get(id);
+      if (account) {
+        (account as { [key: string]: any })[attribute] = value;
       }
-      if (this.accountsToAdd.size == 0 && this.accountsToDelete.length == 0 && this.accountsToEdit.size == 0) {
-        this.toSave = false;
-      } else {
+      // Check if there is something to save
+      if (!areMapsEqual(this.accounts, this.accountsEdited)) {
         this.toSave = true;
+      } else {
+        this.toSave = false;
       }
-
     },
 
     // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------
@@ -170,17 +178,23 @@ export const useDataStore = defineStore('dataStore', {
       this.loadTipsFromFirebase();
     },
     saveAccountsToFirebase: async function () {
-      // Add new tips
-      for (let account of this.accountsToAdd.values()) {
-        await addDoc(accountsCollection, account.toJsonObject());
+      // Add new accounts and edit existing accounts
+      for (let [id, account] of this.accountsEdited.entries()) {
+        if (!this.accounts.has(id)) {
+          // This is a new account
+          await addDoc(usersCollection, account.toJsonObject());
+        } else if (!this.accounts.get(id)?.equals(account)) {
+          // This account has been edited
+          await setDoc(doc(usersCollection, id), account.toJsonObject());
+        }
       }
-      // Delete tips
-      for (let id of this.accountsToDelete) {
-        await deleteDoc(doc(accountsCollection, id));
-      }
-      // Edit tips
-      for (let [id, account] of this.accountsToEdit) {
-        await setDoc(doc(accountsCollection, id), account.toJsonObject());
+
+      // Delete accounts
+      for (let id of this.accounts.keys()) {
+        if (!this.accountsEdited.has(id)) {
+          // This account has been deleted
+          await deleteDoc(doc(usersCollection, id));
+        }
       }
       this.loadAccountsFromFirebase();
     },
@@ -210,7 +224,9 @@ export const useDataStore = defineStore('dataStore', {
       // Add to array
       accountsSnapshot.forEach((doc) => {
         let account = new Account(doc.data().mail, doc.data().admin);
+        let accountEdited = new Account(account.mail, account.admin);
         this.accounts.set(doc.id, account);
+        this.accountsEdited.set(doc.id, accountEdited);
       });
     },
     loadModulesFromFirebase: async function () {
@@ -269,6 +285,5 @@ export const useDataStore = defineStore('dataStore', {
         router.replace({ name: 'Modules' });
       }
     },
-
   }
 })
