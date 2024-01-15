@@ -3,6 +3,7 @@ import { provider, auth, usersCollection } from '../firebase';
 import { signInWithPopup, signOut } from 'firebase/auth'
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import router from '@/router';
+import { useMaterialIconsStore } from './material-icons';
 
 interface UserState {
     user: { email: string }
@@ -50,7 +51,12 @@ export const useUserStore = defineStore('userStore', {
                         const snapshot = await getDocs(q);
                         // Check if user email exists in Firestore collection
                         if (!snapshot.empty) {
-                            // User email exists in Firestore collection, keep user and connexion and redirect to modules page
+                            // User email exists in Firestore collection
+                            // Load material icons
+                            const materialIconsStore = useMaterialIconsStore();
+                            await materialIconsStore.load();
+
+                            // keep user and connexion and redirect to modules page
                             this.loggedIn = true;
                             this.admin = snapshot.docs[0].data().admin;
                             router.replace({ name: 'Modules' });

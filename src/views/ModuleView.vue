@@ -5,7 +5,7 @@ import Loader from '@/components/Loader.vue';
 import { useRoute } from 'vue-router';
 import ModulePartCard from '@/components/ModulePartCard.vue';
 import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
-import type { ModulePart } from '@/models/ModulePart';
+import MaterialIconPicker from '@/components/MaterialIconPicker.vue';
 
 // Get the datas store
 const dataStore = useDataStore()
@@ -33,7 +33,7 @@ function isPartsArrayEmpty(): boolean {
   <main v-else class="module-view">
     <InputModuleAttribute attribute="title" label="Titre :" type="text" />
     <InputModuleAttribute attribute="image" label="Image :" type="file" />
-    <InputModuleAttribute attribute="icon" label="Icône :" type="text" />
+    <InputModuleAttribute attribute="icon" label="Icône :" type="picker" />
     <h2 class="subtitle-style">Parties du module :</h2>
     <div class="module-part-list">
       <div v-if="isPartsArrayEmpty()">
@@ -42,6 +42,7 @@ function isPartsArrayEmpty(): boolean {
       <ModulePartCard v-else v-for="(modulePart, index) in dataStore.module.parts" :id="(route.params.id as string)"
         :modulePart="modulePart" :index="index" />
     </div>
+    <MaterialIconPicker />
   </main>
 </template>
 
