@@ -70,7 +70,7 @@ router.beforeEach(async (to, from) => {
     return { name: 'Login' }
   }
 
-  if (to.name === 'Comptes' && !userStore.isAdmin) {
+  if (to.name === 'Accounts' && !userStore.isAdmin) {
     return { name: 'Modules' }
   }
 

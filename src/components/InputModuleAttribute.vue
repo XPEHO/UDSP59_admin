@@ -1,12 +1,17 @@
 <script setup lang="ts">
 
+import InputCard from '@/components/InputCard.vue';
 import { useDataStore } from '@/stores/data';
+import { useRoute } from 'vue-router';
 
 // Get the datas store
 const dataStore = useDataStore()
 
+// Get the route
+const route = useRoute()
+
 // Properties of the component
-defineProps({
+const props = defineProps({
   attribute: {
     type: String,
     required: true,
@@ -21,35 +26,71 @@ defineProps({
   },
 });
 
+function getAttributeValue() {
+  if ('elt' in route.params) {
+    let module = dataStore.moduleEdited
+    let modulePart = module.parts[+route.params.part]
+    let modulePartElement = modulePart.elements[+route.params.elt]
+    return modulePartElement[props.attribute]
+  } else if ('part' in route.params) {
+    let module = dataStore.moduleEdited
+    let modulePart = module.parts[+route.params.part]
+    return modulePart[props.attribute]
+  } else if ('id' in route.params) {
+    return dataStore.moduleEdited[props.attribute]
+  } else {
+    return ''
+  }
+}
+
+function edit(e: Event) {
+  if ('elt' in route.params) {
+
+  } else if ('part' in route.params) {
+
+  } else if ('id' in route.params) {
+    let input = e.target as HTMLInputElement;
+    dataStore.editModule(input.id, input.value);
+  }
+}
+
+function getCSSClasses() {
+  let classes = 'input-module-attribute'
+
+  if ('elt' in route.params) {
+    classes += ' input-module-part-elt-attribute'
+  } else if ('part' in route.params) {
+    classes += ' input-module-part-attribute'
+  }
+  return classes
+}
+
 </script>
 
 <template>
-  <div v-if="type == 'file'" class="input-module-attribute">
-    <label :for="attribute">{{ label }}</label>
-    <input style="display: none;" :type="type" :id="attribute" :name="attribute" :value="dataStore.module[attribute]" />
+  <div v-if="type == 'file'" :class="getCSSClasses()">
+    <label for="image">{{ label }}</label>
+    <input style="display: none;" type="file" id="image" name="image" :value="getAttributeValue()" />
     <div class="image-choice">
-      <img v-if="dataStore.module[attribute] !== ''" :src="dataStore.module[attribute]" alt="image" />
+      <img v-if="getAttributeValue() !== ''" :src="getAttributeValue()" alt="image" />
       <p v-else>Aucune image</p>
-      <label class="label-for-file" :for="attribute">
+      <label class="label-for-file" for="image">
         <img src="../assets/svg/upload.svg" title="Importer">
       </label>
     </div>
   </div>
-  <div v-else-if="type == 'picker'" class="input-module-attribute">
-    <label :for="attribute">{{ label }}</label>
-    <input type="hidden" :id="attribute" :name="attribute" :value="dataStore.module[attribute]" />
+  <div v-else-if="type == 'picker'" :class="getCSSClasses()">
+    <label for="icon">{{ label }}</label>
+    <input type="hidden" id="icon" name="icon" :value="getAttributeValue()" />
     <div class="icon-choice">
-      <i v-if="dataStore.module[attribute] !== ''" class="material-icons" :title="dataStore.module[attribute]">{{
-        dataStore.module[attribute] }}</i>
+      <i v-if="getAttributeValue() !== ''" class="material-icons" :title="getAttributeValue()">{{
+        getAttributeValue() }}</i>
       <p v-else>Aucune Icône</p>
       <a class="picker-button" href="javascript:void(0)"><img src="../assets/svg/edit.svg" title="Modifier"
           alt="edit"></a>
     </div>
   </div>
-  <div v-else class="input-module-attribute">
-    <label :for="attribute">{{ label }}</label>
-    <input class="input-style" :type="type" :id="attribute" :name="attribute" :value="dataStore.module[attribute]" />
-  </div>
+  <InputCard v-else :id="attribute" :label="label" :type="type" :value="getAttributeValue()" :action="edit" />
 </template>
 
 <style>
@@ -65,6 +106,14 @@ defineProps({
   justify-content: flex-start;
   align-items: center;
   gap: 1.5rem;
+
+  &.input-module-part-attribute {
+    background-color: var(--color-primary-3);
+  }
+
+  &.input-module-part-elt-attribute {
+    background-color: var(--color-primary-4);
+  }
 
   & label {
     font-size: 15pt;

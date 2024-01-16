@@ -3,7 +3,7 @@ import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
 import { useRoute } from 'vue-router';
-import InputModulePartElementAttribute from '@/components/InputModulePartElementAttribute.vue';
+import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
 
 // Get the datas store
 const dataStore = useDataStore()
@@ -23,10 +23,8 @@ onMounted(async () => {
 <template>
   <Loader v-if="isLoading" />
   <main v-else class="module-part-elt-view">
-    <InputModulePartElementAttribute attribute="text" label="Texte :" type="text" :part="+(route.params.part as string)"
-      :elt="+(route.params.elt as string)" />
-    <InputModulePartElementAttribute attribute="image" label="Image :" type="file" :part="+(route.params.part as string)"
-      :elt="+(route.params.elt as string)" />
+    <InputModuleAttribute attribute="text" label="Texte :" type="text" />
+    <InputModuleAttribute attribute="image" label="Image :" type="file" />
   </main>
 </template>
 

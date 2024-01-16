@@ -48,6 +48,7 @@ function search(e: Event) {
 }
 
 function selectIcon(icon: string) {
+  dataStore.editModule('icon', icon);
   hide();
 }
 

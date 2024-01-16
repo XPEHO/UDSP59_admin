@@ -31,7 +31,7 @@ function reload() {
 
 // Get breadcrumbs using the route params
 function getBreadcrumbs() {
-  let breadcrumbs = dataStore.module.title
+  let breadcrumbs = dataStore.moduleEdited.title
   if ('part' in route.params) breadcrumbs += '.' + ((+route.params.part) + 1)
   if ('elt' in route.params) breadcrumbs += '.' + ((+route.params.elt) + 1)
   return breadcrumbs

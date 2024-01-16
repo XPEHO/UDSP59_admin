@@ -3,7 +3,7 @@ import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
 import { useRoute } from 'vue-router';
-import ModulePartCard from '@/components/ModulePartCard.vue';
+import ModuleCard from '@/components/ModuleCard.vue';
 import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
 import MaterialIconPicker from '@/components/MaterialIconPicker.vue';
 
@@ -23,7 +23,7 @@ onMounted(async () => {
 
 // Check if parts array is empty
 function isPartsArrayEmpty(): boolean {
-  return dataStore.module.parts.length == 0;
+  return dataStore.moduleEdited.parts?.length == 0;
 }
 
 </script>
@@ -39,8 +39,8 @@ function isPartsArrayEmpty(): boolean {
       <div v-if="isPartsArrayEmpty()">
         <p>Aucune partie pour le moment.</p>
       </div>
-      <ModulePartCard v-else v-for="(modulePart, index) in dataStore.module.parts" :id="(route.params.id as string)"
-        :modulePart="modulePart" :index="index" />
+      <ModuleCard v-else v-for="(modulePart, index) in dataStore.moduleEdited.parts" :id="(route.params.id as string)"
+        :index="index" />
     </div>
     <MaterialIconPicker />
   </main>

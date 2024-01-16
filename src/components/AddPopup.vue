@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useDataStore } from '@/stores/data';
-import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
+import InputCard from '@/components/InputCard.vue';
 import { useRoute } from 'vue-router';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Module } from '@/models/Module';
@@ -40,14 +40,21 @@ function show() {
   let popupWrapper = document.querySelector('.popup-add-wrapper') as HTMLElement;
   popupWrapper.style.display = 'flex';
   if (route.name == 'Modules') {
-    let titleInput = document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement;
+    let titleInput = document.querySelector('.popup-add.popup-modules #titleToAdd') as HTMLInputElement;
     titleInput.focus();
+  } else if (route.name == 'Tips') {
+    let tipInput = document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement;
+    tipInput.focus();
+  } else if (route.name == 'Accounts') {
+    let mailInput = document.querySelector('.popup-add.popup-accounts #mailToAdd') as HTMLInputElement;
+    mailInput.focus();
   }
 }
 
 function addModule() {
-  let titleInput = document.querySelector('.popup-add.popup-modules .input-module-attribute #title') as HTMLInputElement;
-  let module = new Module("", "", titleInput.value, Array<ModulePart>());
+  let titleInput = document.querySelector('.popup-add.popup-modules #titleToAdd') as HTMLInputElement;
+  let newOrder = dataStore.modulesEdited.size + 1;
+  let module = new Module(titleInput.value, "", "", titleInput.value, newOrder, Array<ModulePart>());
   dataStore.addModule(module);
   titleInput.value = "";
   hide();
@@ -62,7 +69,7 @@ function addTip() {
 }
 
 function addAccount() {
-  let mailInput = document.querySelector('.popup-add.popup-accounts input[name="mail"]') as HTMLInputElement;
+  let mailInput = document.querySelector('.popup-add.popup-accounts input[name="mailToAdd"]') as HTMLInputElement;
   let account = new Account(mailInput.value, false);
   dataStore.addAccount(account);
   mailInput.value = "";
@@ -75,7 +82,7 @@ function addAccount() {
   <div class="popup-add-wrapper">
     <div v-if="route.name == 'Modules'" class="popup-add popup-modules">
       <h3 class="subtitle-style">Ajouter un module</h3>
-      <InputModuleAttribute attribute="title" label="Titre :" type="text" />
+      <InputCard id="titleToAdd" label="Titre :" type="text" />
       <div class="popup-buttons">
         <button class="button-style" @click="hide">Annuler</button>
         <button class="button-style-hook" @click="addModule">Ajouter</button>
@@ -91,10 +98,7 @@ function addAccount() {
     </div>
     <div v-if="route.name == 'Accounts'" class="popup-add popup-accounts">
       <h3 class="subtitle-style">Ajouter un compte</h3>
-      <div class="input-account-mail">
-        <label for="mail">Email :</label>
-        <input class="input-style" type="email" name="mail">
-      </div>
+      <InputCard id="mailToAdd" label="Email :" type="email" />
       <div class="popup-buttons">
         <button class="button-style" @click="hide">Annuler</button>
         <button class="button-style-hook" @click="addAccount">Ajouter</button>
@@ -146,29 +150,6 @@ function addAccount() {
 
       &:focus {
         outline: none;
-      }
-    }
-
-    & .input-account-mail {
-      background-color: var(--color-primary-1);
-      color: var(--color-background);
-      padding: 1.2rem 2rem;
-      border-radius: 1rem;
-      width: 100%;
-      box-shadow: 3px 3px 10px 1px rgb(0 0 0 / 40%);
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 1.5rem;
-
-      & label {
-        font-size: 15pt;
-        white-space: nowrap;
-      }
-
-      & .input-style {
-        width: 100%;
       }
     }
 
