@@ -1,29 +1,118 @@
 <script setup lang="ts">
+import { getModeForResolutionAtIndex } from 'typescript';
 import { Module } from '../models/Module';
 import { useDataStore } from '@/stores/data';
+import { useRoute, type RouteLocationRaw } from 'vue-router';
 
 // Get the datas store
 const dataStore = useDataStore();
 
+// Get the route
+const route = useRoute()
+
 // Properties of the component
-defineProps({
+const props = defineProps({
   id: {
     type: String,
     required: true,
   },
-  module: {
-    type: Module,
-    required: true,
+  index: {
+    type: Number,
+    required: false,
+    default: -1,
   },
 });
+
+function getCardTitle() {
+  if ('elt' in route.params) {
+    return ''
+  } else if ('part' in route.params) {
+    let module = dataStore.moduleEdited
+    let modulePart = module.parts[+route.params.part]
+    let modulePartElement = modulePart.elements[props.index]
+    return modulePartElement?.text
+  } else if ('id' in route.params) {
+    let module = dataStore.moduleEdited
+    let modulePart = module.parts[props.index]
+    return modulePart?.subtitle
+  } else {
+    let module = dataStore.modulesEdited.get(props.id)
+    return module?.title
+  }
+}
+
+function deleteCard() {
+  if ('elt' in route.params) {
+    // Coming soon
+  } else if ('part' in route.params) {
+    // Coming soon
+  } else if ('id' in route.params) {
+    dataStore.moduleEdited.deletePart(props.index);
+    dataStore.checkModuleEdition();
+  } else {
+    dataStore.deleteModule(props.id)
+  }
+}
+
+function getCardLink() {
+  if ('elt' in route.params) {
+    return '/module/' + route.params.id + '/' + route.params.part + '/' + props.index
+  } else if ('part' in route.params) {
+    return '/module/' + route.params.id + '/' + route.params.part + '/' + props.index
+  } else if ('id' in route.params) {
+    return '/module/' + route.params.id + '/' + props.index
+  } else {
+    return '/module/' + props.id
+  }
+}
+
+function increaseOrder() {
+  if ('elt' in route.params) {
+    // Coming soon
+  } else if ('part' in route.params) {
+    // Coming soon
+  } else if ('id' in route.params) {
+    dataStore.moduleEdited.increasePartOrder(props.index);
+    dataStore.checkModuleEdition();
+  } else {
+    dataStore.increaseModuleOrder(props.id)
+  }
+}
+
+function decreaseOrder() {
+  if ('elt' in route.params) {
+    // Coming soon
+  } else if ('part' in route.params) {
+    // Coming soon
+  } else if ('id' in route.params) {
+    dataStore.moduleEdited.decreasePartOrder(props.index);
+    dataStore.checkModuleEdition();
+  } else {
+    dataStore.decreaseModuleOrder(props.id)
+  }
+}
+
+function getCSSClasses() {
+  let classes = 'module-card'
+  if ('part' in route.params) {
+    classes += ' module-part-elt-card'
+  } else if ('id' in route.params) {
+    classes += ' module-part-card'
+  }
+  return classes
+}
 
 </script>
 
 <template>
-  <div class="module-card">
-    <p>{{ module.title }}</p>
-    <a href="javascript:void(0)" @click="dataStore.deleteModule(id)"><img src="../assets/svg/delete.svg"></a>
-    <RouterLink :to="'/module/' + id"><img src="../assets/svg/chevron-right.svg"></RouterLink>
+  <div :class="getCSSClasses()">
+    <div>
+      <a href="javascript:void(0)" @click="increaseOrder"><img src="../assets/svg/chevron-up.svg"></a>
+      <a href="javascript:void(0)" @click="decreaseOrder"><img src="../assets/svg/chevron-down.svg"></a>
+    </div>
+    <p>{{ getCardTitle() }}</p>
+    <a href="javascript:void(0)" @click="deleteCard"><img src="../assets/svg/delete.svg"></a>
+    <RouterLink :to="getCardLink()"><img src="../assets/svg/chevron-right.svg"></RouterLink>
   </div>
 </template>
 
@@ -40,6 +129,26 @@ defineProps({
   justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
+
+  &.module-part-card {
+    background-color: var(--color-primary-2);
+  }
+
+  &.module-part-elt-card {
+    background-color: var(--color-primary-3);
+  }
+
+  & div {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    & a img {
+      height: 1.2rem;
+      width: 1.2rem;
+    }
+  }
 
   & p {
     font-size: 15pt;

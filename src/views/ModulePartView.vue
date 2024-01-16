@@ -3,8 +3,8 @@ import { useDataStore } from '@/stores/data';
 import { onMounted, ref } from 'vue';
 import Loader from '@/components/Loader.vue';
 import { useRoute } from 'vue-router';
-import ModulePartElementCard from '@/components/ModulePartElementCard.vue';
-import InputModulePartAttribute from '@/components/InputModulePartAttribute.vue';
+import ModuleCard from '@/components/ModuleCard.vue';
+import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
 
 // Get the datas store
 const dataStore = useDataStore()
@@ -22,12 +22,12 @@ onMounted(async () => {
 // Get current part
 function getCurrentPart() {
   let currentPartIndex = +route.params.part;
-  return dataStore.module.parts[currentPartIndex];
+  return dataStore.moduleEdited.parts[currentPartIndex];
 }
 
 // Check if elements array is empty
 function isElementsArrayEmpty(): boolean {
-  return getCurrentPart().elements.length == 0;
+  return getCurrentPart().elements?.length == 0;
 }
 
 </script>
@@ -35,15 +35,15 @@ function isElementsArrayEmpty(): boolean {
 <template>
   <Loader v-if="isLoading" />
   <main v-else class="module-part-view">
-    <InputModulePartAttribute attribute="subtitle" label="Titre :" type="text" :part="+(route.params.part as string)" />
-    <InputModulePartAttribute attribute="image" label="Image :" type="file" :part="+(route.params.part as string)" />
+    <InputModuleAttribute attribute="subtitle" label="Titre :" type="text" />
+    <InputModuleAttribute attribute="image" label="Image :" type="file" />
     <h2 class="subtitle-style">Elements de la partie du module :</h2>
     <div class="module-part-elt-list">
       <div v-if="isElementsArrayEmpty()">
         <p>Aucun éléments pour le moment.</p>
       </div>
-      <ModulePartElementCard v-else v-for="(modulePartElt, index) in getCurrentPart().elements"
-        :id="(route.params.id as string)" :modulePartElt="modulePartElt" :index="index" />
+      <ModuleCard v-else v-for="(modulePartElt, index) in getCurrentPart().elements" :id="(route.params.id as string)"
+        :index="index" />
     </div>
   </main>
 </template>

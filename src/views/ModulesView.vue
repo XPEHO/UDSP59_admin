@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <Loader v-if="isLoading" />
   <main v-else>
-    <ModuleCard v-for="[id, module] in dataStore.modules" :id="id" :module="module" />
+    <ModuleCard v-for="module in dataStore.getSortedModules()" :id="module.id" />
   </main>
 </template>
 
