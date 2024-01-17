@@ -1,12 +1,15 @@
 <script setup lang="ts">
 
 import { useUserStore } from '../stores/user'
+import { useDataStore } from '../stores/data'
 
-// Get the user store
+// Get the stores
 const userStore = useUserStore();
+const dataStore = useDataStore();
 
-// Reset the store by default
+// Reset the stores by default
 userStore.reset();
+dataStore.reset();
 
 </script>
 

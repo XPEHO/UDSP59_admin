@@ -5,6 +5,7 @@ import { useUserStore } from '../stores/user'
 import { useDataStore } from '../stores/data'
 import router from '@/router';
 import AddPopup from '@/components/AddPopup.vue';
+import SaveAlertPopup from '@/components/SaveAlertPopup.vue';
 
 // Get the stores
 const userStore = useUserStore()
@@ -80,6 +81,7 @@ function getBreadcrumbs() {
       <router-view></router-view>
     </section>
     <AddPopup v-if="route.name !== 'ModulePartElement'" />
+    <SaveAlertPopup v-if="dataStore.needToSave" />
   </main>
 </template>
 
