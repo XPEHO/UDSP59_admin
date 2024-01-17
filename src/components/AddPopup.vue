@@ -134,10 +134,6 @@ function addAccount() {
       color: var(--color-secondary);
     }
 
-    & .input-module-attribute {
-      background-color: var(--color-primary-1);
-    }
-
     & textarea {
       width: 100%;
       height: 100%;
