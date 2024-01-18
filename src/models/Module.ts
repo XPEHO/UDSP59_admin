@@ -1,9 +1,13 @@
+import { getDownloadURL, ref } from 'firebase/storage';
 import { ModulePart } from './ModulePart';
+import { useDataStore } from '@/stores/data';
+import { storage } from '@/firebase';
 
 export class Module {
   id: string;
   icon: string;
   image: string;
+  file?: File;
   title: string;
   order: number;
   parts: Array<ModulePart>;
@@ -13,6 +17,7 @@ export class Module {
     this.id = id;
     this.icon = icon;
     this.image = image;
+    this.file = undefined;
     this.title = title;
     this.order = order;
     this.parts = parts;
@@ -57,6 +62,7 @@ export class Module {
   equals(module: Module) {
     return this.icon === module.icon
       && this.image === module.image
+      && this.file === module.file
       && this.title === module.title
       && this.order === module.order
       && this.parts.length === module.parts.length
@@ -72,5 +78,29 @@ export class Module {
       this.order,
       this.parts.map((part) => part.clone())
     );
+  }
+
+  async uploadImagesToFirebase(originModule: Module) {
+    // Get the datastore
+    const dataStore = useDataStore();
+
+    // Check if the file property is defined
+    if (this.file) {
+      // Upload the file to firebase
+      let newRef = `modules/${this.id}/${this.file.name}`
+      await dataStore.uploadFileToFirebase(this.file, newRef, this.image)
+      this.image = newRef
+    }
+
+    // Check if we need to delete image
+    if (this.image == '' && this.image !== originModule.image) {
+      // Delete the image from firebase
+      await dataStore.deleteFileFromFirebase(originModule.image)
+    }
+
+    // Upload the images of the parts to firebase
+    this.parts.forEach(async (part, index) => {
+      await part.uploadImagesToFirebase(originModule.parts[index], this.id, index)
+    })
   }
 }
