@@ -93,14 +93,16 @@ export class Module {
     }
 
     // Check if we need to delete image
-    if (this.image == '' && this.image !== originModule.image) {
+    if (this.image == '' && originModule && this.image !== originModule.image) {
       // Delete the image from firebase
       await dataStore.deleteFileFromFirebase(originModule.image)
     }
 
     // Upload the images of the parts to firebase
-    this.parts.forEach(async (part, index) => {
-      await part.uploadImagesToFirebase(originModule.parts[index], this.id, index)
-    })
+    if (this.parts.length !== 0) {
+      this.parts.forEach(async (part, index) => {
+        await part.uploadImagesToFirebase(originModule.parts[index], this.id, index)
+      })
+    }
   }
 }

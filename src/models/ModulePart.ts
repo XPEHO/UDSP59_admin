@@ -53,14 +53,16 @@ export class ModulePart {
     }
 
     // Check if we need to delete image
-    if (this.image == '' && this.image !== originPart.image) {
+    if (this.image == '' && originPart && this.image !== originPart.image) {
       // Delete the image from firebase
       await dataStore.deleteFileFromFirebase(originPart.image)
     }
 
     // Upload the images of the elements to firebase
-    this.elements.forEach(async (element, eltIndex) => {
-      await element.uploadImagesToFirebase(originPart.elements[index], id, index, eltIndex)
-    });
+    if (this.elements.length !== 0) {
+      this.elements.forEach(async (element, eltIndex) => {
+        await element.uploadImagesToFirebase(originPart.elements[eltIndex], id, index, eltIndex)
+      });
+    }
   }
 }

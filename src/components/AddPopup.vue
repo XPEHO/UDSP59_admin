@@ -7,6 +7,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Module } from '@/models/Module';
 import { ModulePart } from '@/models/ModulePart';
 import { Account } from '@/models/Account';
+import type { ModulePartElement } from '@/models/ModulePartElement';
 
 // Get the route
 const route = useRoute()
@@ -39,20 +40,19 @@ function hide() {
 function show() {
   let popupWrapper = document.querySelector('.popup-add-wrapper') as HTMLElement;
   popupWrapper.style.display = 'flex';
-  if (route.name == 'Modules') {
-    let titleInput = document.querySelector('.popup-add.popup-modules #titleToAdd') as HTMLInputElement;
-    titleInput.focus();
-  } else if (route.name == 'Tips') {
-    let tipInput = document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement;
-    tipInput.focus();
+  let input
+  if (route.name == 'Tips') {
+    input = document.querySelector('.popup-add textarea') as HTMLTextAreaElement;
   } else if (route.name == 'Accounts') {
-    let mailInput = document.querySelector('.popup-add.popup-accounts #mailToAdd') as HTMLInputElement;
-    mailInput.focus();
+    input = document.querySelector('.popup-add #mailToAdd') as HTMLInputElement;
+  } else {
+    input = document.querySelector('.popup-add #titleToAdd') as HTMLInputElement;
   }
+  input.focus();
 }
 
 function addModule() {
-  let titleInput = document.querySelector('.popup-add.popup-modules #titleToAdd') as HTMLInputElement;
+  let titleInput = document.querySelector('.popup-add #titleToAdd') as HTMLInputElement;
   let newOrder = dataStore.modulesEdited.size + 1;
   let module = new Module(titleInput.value, "", "", titleInput.value, newOrder, Array<ModulePart>());
   dataStore.addModule(module);
@@ -60,8 +60,21 @@ function addModule() {
   hide();
 }
 
+function addModulePart() {
+  let titleInput = document.querySelector('.popup-add #titleToAdd') as HTMLInputElement;
+  let modulePart = new ModulePart("", titleInput.value, Array<ModulePartElement>());
+  dataStore.moduleEdited.addPart(modulePart);
+  dataStore.checkModuleEdition();
+  titleInput.value = "";
+  hide();
+}
+
+function addModulePartElement() {
+
+}
+
 function addTip() {
-  let tipInput = document.querySelector('.popup-add.popup-tips textarea') as HTMLTextAreaElement;
+  let tipInput = document.querySelector('.popup-add textarea') as HTMLTextAreaElement;
   let tip = tipInput.value;
   dataStore.addTip(tip);
   tipInput.value = "";
@@ -69,39 +82,53 @@ function addTip() {
 }
 
 function addAccount() {
-  let mailInput = document.querySelector('.popup-add.popup-accounts input[name="mailToAdd"]') as HTMLInputElement;
+  let mailInput = document.querySelector('.popup-add input[name="mailToAdd"]') as HTMLInputElement;
   let account = new Account(mailInput.value, false);
   dataStore.addAccount(account);
   mailInput.value = "";
   hide();
 }
 
+function add() {
+  if (route.name == 'Modules') {
+    addModule();
+  } else if (route.name == 'Tips') {
+    addTip();
+  } else if (route.name == 'Accounts') {
+    addAccount();
+  } else if ('part' in route.params) {
+    addModulePartElement();
+  } else if ('id' in route.params) {
+    addModulePart();
+  }
+}
+
+function getPopupTitle() {
+  if (route.name == 'Modules') {
+    return 'Ajouter un module';
+  } else if (route.name == 'Tips') {
+    return 'Ajouter une astuce';
+  } else if (route.name == 'Accounts') {
+    return 'Ajouter un compte';
+  } else if ('part' in route.params) {
+    return 'Ajouter un élément';
+  } else if ('id' in route.params) {
+    return 'Ajouter une partie';
+  }
+}
+
 </script>
 
 <template>
   <div class="popup-add-wrapper">
-    <div v-if="route.name == 'Modules'" class="popup-add popup-modules">
-      <h3 class="subtitle-style">Ajouter un module</h3>
-      <InputCard id="titleToAdd" label="Titre :" type="text" />
+    <div class="popup-add">
+      <h3 class="subtitle-style">{{ getPopupTitle() }}</h3>
+      <textarea v-if="route.name == 'Tips'" name="content"></textarea>
+      <InputCard v-else-if="route.name == 'Accounts'" id="mailToAdd" label="Email :" type="email" />
+      <InputCard v-else id="titleToAdd" label="Titre :" type="text" />
       <div class="popup-buttons">
         <button class="button-style" @click="hide">Annuler</button>
-        <button class="button-style-hook" @click="addModule">Ajouter</button>
-      </div>
-    </div>
-    <div v-if="route.name == 'Tips'" class="popup-add popup-tips">
-      <h3 class="subtitle-style">Ajouter une astuce</h3>
-      <textarea name="content"></textarea>
-      <div class="popup-buttons">
-        <button class="button-style" @click="hide">Annuler</button>
-        <button class="button-style-hook" @click="addTip">Ajouter</button>
-      </div>
-    </div>
-    <div v-if="route.name == 'Accounts'" class="popup-add popup-accounts">
-      <h3 class="subtitle-style">Ajouter un compte</h3>
-      <InputCard id="mailToAdd" label="Email :" type="email" />
-      <div class="popup-buttons">
-        <button class="button-style" @click="hide">Annuler</button>
-        <button class="button-style-hook" @click="addAccount">Ajouter</button>
+        <button class="button-style-hook" @click="add">Ajouter</button>
       </div>
     </div>
   </div>
