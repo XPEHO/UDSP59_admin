@@ -46,7 +46,7 @@ export class ModulePartElement {
     }
 
     // Check if we need to delete image
-    if (this.image == '' && this.image !== originElement.image) {
+    if (this.image == '' && originElement && this.image !== originElement.image) {
       // Delete the image from firebase
       await dataStore.deleteFileFromFirebase(originElement.image)
     }
