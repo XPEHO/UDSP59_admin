@@ -33,9 +33,13 @@ function getAttributeValue() {
     let modulePartElement = modulePart.elements[+route.params.elt]
     return modulePartElement[props.attribute]
   } else if ('part' in route.params) {
-    let module = dataStore.moduleEdited
-    let modulePart = module.parts[+route.params.part]
-    return modulePart[props.attribute]
+    try {
+      let modulePartIndex = +route.params.part
+      let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+      return modulePart[props.attribute]
+    } catch (error) {
+      return ''
+    }
   } else if ('id' in route.params) {
     return dataStore.moduleEdited[props.attribute]
   } else {
@@ -44,12 +48,15 @@ function getAttributeValue() {
 }
 
 function edit(e: Event) {
+  let input = e.target as HTMLInputElement;
   if ('elt' in route.params) {
 
   } else if ('part' in route.params) {
-
+    let modulePartIndex = +route.params.part
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    modulePart[input.id] = input.value;
+    dataStore.checkModuleEdition()
   } else if ('id' in route.params) {
-    let input = e.target as HTMLInputElement;
     dataStore.editModule(input.id, input.value);
   }
 }
@@ -91,7 +98,10 @@ async function handleFileUpload(e: Event) {
   if ('elt' in route.params) {
 
   } else if ('part' in route.params) {
-
+    let modulePartIndex = +route.params.part
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    modulePart.file = file;
+    dataStore.checkModuleEdition()
   } else {
     dataStore.editModule("file", file);
   }
@@ -104,7 +114,14 @@ async function deleteImage() {
   if ('elt' in route.params) {
 
   } else if ('part' in route.params) {
-
+    let modulePartIndex = +route.params.part
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    if (modulePart.file) {
+      modulePart.file = undefined;
+    } else if (modulePart.image !== '') {
+      modulePart.image = "";
+    }
+    dataStore.checkModuleEdition()
   } else {
     if (dataStore.moduleEdited.file) {
       dataStore.editModule("file", undefined);
