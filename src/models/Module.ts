@@ -100,9 +100,9 @@ export class Module {
 
     // Upload the images of the parts to firebase
     if (this.parts.length !== 0) {
-      this.parts.forEach(async (part, index) => {
-        await part.uploadImagesToFirebase(originModule.parts[index], this.id, index)
-      })
+      await Promise.all(this.parts.map((part, index) => {
+        return part.uploadImagesToFirebase(originModule.parts[index], this.id, index);
+      }));
     }
   }
 }

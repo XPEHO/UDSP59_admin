@@ -248,14 +248,17 @@ export const useDataStore = defineStore('dataStore', {
       this.loadModulesFromFirebase();
     },
     saveModuleToFirebase: async function (id: string) {
+      // Upload images to firebase
+      await this.moduleEdited.uploadImagesToFirebase(this.module)
       // Replace existing module
-      await this.moduleEdited.uploadImagesToFirebase(this.module);
-      await setDoc(doc(modulesCollection, id), this.moduleEdited.toJsonObject());
-      this.loadModuleFromFirebase(id);
+      await setDoc(doc(modulesCollection, id), this.moduleEdited.toJsonObject())
+      // Reload module
+      await this.loadModuleFromFirebase(id);
     },
     saveTipsToFirebase: async function () {
       // Replace existing tips
       await setDoc(doc(tipsCollection, "tips"), { content: this.tipsEdited });
+      // Reload tips
       this.loadTipsFromFirebase();
     },
     saveAccountsToFirebase: async function () {
@@ -277,6 +280,7 @@ export const useDataStore = defineStore('dataStore', {
           await deleteDoc(doc(usersCollection, id));
         }
       }
+      // Reload accounts
       this.loadAccountsFromFirebase();
     },
     uploadFileToFirebase: async function (file: File, newRef: string, oldRef: string) {

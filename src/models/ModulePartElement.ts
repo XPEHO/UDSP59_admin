@@ -41,7 +41,7 @@ export class ModulePartElement {
     if (this.file) {
       // Upload the file to firebase
       let newRef = `modules/${id}/${partIndex}/${index}/${this.file.name}`
-      dataStore.uploadFileToFirebase(this.file, newRef, this.image)
+      await dataStore.uploadFileToFirebase(this.file, newRef, this.image)
       this.image = newRef
     }
 

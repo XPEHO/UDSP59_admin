@@ -48,7 +48,7 @@ export class ModulePart {
     if (this.file) {
       // Upload the file to firebase
       let newRef = `modules/${id}/${index}/${this.file.name}`
-      dataStore.uploadFileToFirebase(this.file, newRef, this.image)
+      await dataStore.uploadFileToFirebase(this.file, newRef, this.image)
       this.image = newRef
     }
 
@@ -60,9 +60,9 @@ export class ModulePart {
 
     // Upload the images of the elements to firebase
     if (this.elements.length !== 0) {
-      this.elements.forEach(async (element, eltIndex) => {
-        await element.uploadImagesToFirebase(originPart.elements[eltIndex], id, index, eltIndex)
-      });
+      await Promise.all(this.elements.map((element, eltIndex) => {
+        return element.uploadImagesToFirebase(originPart.elements[eltIndex], id, index, eltIndex);
+      }));
     }
   }
 }

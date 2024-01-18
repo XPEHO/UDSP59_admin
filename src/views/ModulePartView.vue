@@ -5,6 +5,7 @@ import Loader from '@/components/Loader.vue';
 import { useRoute } from 'vue-router';
 import ModuleCard from '@/components/ModuleCard.vue';
 import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
+import type { ModulePart } from '@/models/ModulePart';
 
 // Get the datas store
 const dataStore = useDataStore()
@@ -22,13 +23,21 @@ onMounted(async () => {
 
 // Get current part
 function getCurrentPart() {
-  let currentPartIndex = +route.params.part;
-  return dataStore.moduleEdited.parts[currentPartIndex];
+  try {
+    let currentPartIndex = +route.params.part;
+    return dataStore.moduleEdited.parts[currentPartIndex]
+  } catch (error) {
+    return null;
+  }
 }
 
 // Check if elements array is empty
 function isElementsArrayEmpty(): boolean {
-  return getCurrentPart().elements?.length == 0;
+  try {
+    return getCurrentPart()?.elements.length == 0;
+  } catch (error) {
+    return true;
+  }
 }
 
 </script>
@@ -43,7 +52,7 @@ function isElementsArrayEmpty(): boolean {
       <div v-if="isElementsArrayEmpty()">
         <p>Aucun éléments pour le moment.</p>
       </div>
-      <ModuleCard v-else v-for="(modulePartElt, index) in getCurrentPart().elements" :id="(route.params.id as string)"
+      <ModuleCard v-else v-for="(modulePartElt, index) in getCurrentPart()?.elements" :id="(route.params.id as string)"
         :index="index" />
     </div>
   </main>
