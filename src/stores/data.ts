@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia'
 import { areMapsEqual } from '../utilities/functions';
-import { modulesCollection, tipsCollection, usersCollection } from '../firebase';
+import { modulesCollection, storage, tipsCollection, usersCollection } from '../firebase';
 import { getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Account } from '../models/Account';
 import { Module } from '../models/Module';
 import { ModulePart } from '../models/ModulePart';
 import { ModulePartElement } from '../models/ModulePartElement';
 import router from '@/router';
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { useRoute, type RouteLocationNormalizedLoaded } from 'vue-router';
 
 interface DataState {
   tips: Array<string>
@@ -17,6 +19,8 @@ interface DataState {
   accountsEdited: Map<string, Account>
   tipsEdited: Array<string>
   moduleEdited: Module
+  currentRoute: RouteLocationNormalizedLoaded
+  imageUrl: string
   toSave: boolean
 }
 
@@ -30,6 +34,8 @@ export const useDataStore = defineStore('dataStore', {
     accountsEdited: new Map<string, Account>(),
     tipsEdited: Array<string>(),
     moduleEdited: {} as Module,
+    currentRoute: {} as RouteLocationNormalizedLoaded,
+    imageUrl: '',
     toSave: false,
   }),
   getters: {
@@ -41,6 +47,8 @@ export const useDataStore = defineStore('dataStore', {
     getAccountsEdited: (state: DataState) => state.accountsEdited,
     getTipsEdited: (state: DataState) => state.tipsEdited,
     getModuleEdited: (state: DataState) => state.moduleEdited,
+    getCurrentRoute: (state: DataState) => state.currentRoute,
+    getImageUrl: (state: DataState) => state.imageUrl,
     needToSave: (state: DataState) => state.toSave,
   },
   actions: {
@@ -54,6 +62,7 @@ export const useDataStore = defineStore('dataStore', {
       this.accountsEdited = new Map<string, Account>();
       this.tipsEdited = Array<string>();
       this.moduleEdited = {} as Module;
+      this.imageUrl = '';
       this.toSave = false;
     },
 
@@ -240,6 +249,7 @@ export const useDataStore = defineStore('dataStore', {
     },
     saveModuleToFirebase: async function (id: string) {
       // Replace existing module
+      await this.moduleEdited.uploadImagesToFirebase(this.module);
       await setDoc(doc(modulesCollection, id), this.moduleEdited.toJsonObject());
       this.loadModuleFromFirebase(id);
     },
@@ -268,6 +278,25 @@ export const useDataStore = defineStore('dataStore', {
         }
       }
       this.loadAccountsFromFirebase();
+    },
+    uploadFileToFirebase: async function (file: File, newRef: string, oldRef: string) {
+      // Create a storage reference
+      let storageRef = ref(storage, newRef);
+
+      // Upload the new file
+      await uploadBytes(storageRef, file).then(async (snapshot) => {
+        // Remove old file if exists
+        if (oldRef !== '') {
+          await this.deleteFileFromFirebase(oldRef);
+        }
+      }).catch((error) => {
+        console.error(error)
+      });
+    },
+    deleteFileFromFirebase: async function (oldRef: string) {
+      // Delete the file from firebase
+      let storageRef = ref(storage, oldRef)
+      await deleteObject(storageRef)
     },
 
     // ------------------------- LOAD FIREBASE DATAS TO LOCAL -------------------------
@@ -354,10 +383,47 @@ export const useDataStore = defineStore('dataStore', {
         }
         this.module = new Module(doc.id, doc.data().icon, doc.data().image, doc.data().title, doc.data().order, moduleParts);
         this.moduleEdited = this.module.clone();
+        await this.loadImageUrl();
       } else {
         // Module does not exist in Firestore collection, redirect on modules page
         router.replace({ name: 'Modules' });
       }
+    },
+    loadImageUrl: async function () {
+      let module = this.moduleEdited
+      let route = this.currentRoute
+
+      // Get the url of the image
+      let url
+      if ('elt' in route.params) {
+        let modulePart = module.parts[+route.params.part]
+        let modulePartElement = modulePart.elements[+route.params.elt]
+        if (modulePartElement.file) {
+          url = URL.createObjectURL(modulePartElement.file)
+        } else if (modulePartElement.image !== '') {
+          url = await getDownloadURL(ref(storage, modulePartElement.image))
+        } else {
+          url = ''
+        }
+      } else if ('part' in route.params) {
+        let modulePart = module.parts[+route.params.part]
+        if (modulePart.file) {
+          url = URL.createObjectURL(modulePart.file)
+        } else if (modulePart.image !== '') {
+          url = await getDownloadURL(ref(storage, modulePart.image))
+        } else {
+          url = ''
+        }
+      } else {
+        if (module.file) {
+          url = URL.createObjectURL(module.file)
+        } else if (module.image !== '') {
+          url = await getDownloadURL(ref(storage, module.image))
+        } else {
+          url = ''
+        }
+      }
+      this.imageUrl = url
     },
   }
 })

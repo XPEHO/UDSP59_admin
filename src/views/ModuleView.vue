@@ -16,6 +16,7 @@ const route = useRoute();
 // Load module from firebase before to display the view
 const isLoading = ref(true);
 onMounted(async () => {
+  dataStore.currentRoute = route;
   await dataStore.loadModuleFromFirebase(route.params.id as string);
   isLoading.value = false;
 });

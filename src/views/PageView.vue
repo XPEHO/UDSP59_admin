@@ -27,15 +27,22 @@ function reload() {
   if (route.name == 'Modules') dataStore.loadModulesFromFirebase()
   if (route.name == 'Tips') dataStore.loadTipsFromFirebase()
   if (route.name == 'Accounts') dataStore.loadAccountsFromFirebase()
-  if (route.path.includes('/module/')) dataStore.loadModuleFromFirebase(route.params.id as string)
+  if (route.path.includes('/module/')) {
+    dataStore.currentRoute = route;
+    dataStore.loadModuleFromFirebase(route.params.id as string)
+  }
 }
 
 // Get breadcrumbs using the route params
 function getBreadcrumbs() {
-  let breadcrumbs = dataStore.moduleEdited.title
-  if ('part' in route.params) breadcrumbs += '.' + ((+route.params.part) + 1)
-  if ('elt' in route.params) breadcrumbs += '.' + ((+route.params.elt) + 1)
-  return breadcrumbs
+  if (dataStore.moduleEdited.title) {
+    let breadcrumbs = dataStore.moduleEdited.title
+    if ('part' in route.params) breadcrumbs += '.' + ((+route.params.part) + 1)
+    if ('elt' in route.params) breadcrumbs += '.' + ((+route.params.elt) + 1)
+    return breadcrumbs
+  } else {
+    return ''
+  }
 }
 
 </script>

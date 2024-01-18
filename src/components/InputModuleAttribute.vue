@@ -65,18 +65,72 @@ function getCSSClasses() {
   return classes
 }
 
+async function handleFileUpload(e: Event) {
+  let file;
+  let input = e.target as HTMLInputElement;
+
+  // Check if the file is selected
+  if (!input.files || input.files.length <= 0) {
+    return
+  }
+  file = input.files[0];
+
+  // Check if the file is an image
+  if (!file.type.startsWith('image/')) {
+    alert('Veuillez uploader une image.');
+    return;
+  }
+
+  // Check if the file size is under 500KB
+  if (file.size > 500 * 1024) {
+    alert('Votre image est trop grande, elle doit faire moins de 500ko.');
+    return;
+  }
+
+  // Keep the file
+  if ('elt' in route.params) {
+
+  } else if ('part' in route.params) {
+
+  } else {
+    dataStore.editModule("file", file);
+  }
+
+  // Preview the image
+  await dataStore.loadImageUrl()
+}
+
+async function deleteImage() {
+  if ('elt' in route.params) {
+
+  } else if ('part' in route.params) {
+
+  } else {
+    if (dataStore.moduleEdited.file) {
+      dataStore.editModule("file", undefined);
+    } else if (dataStore.moduleEdited.image !== '') {
+      dataStore.editModule("image", "");
+    }
+  }
+  await dataStore.loadImageUrl()
+}
+
 </script>
 
 <template>
   <div v-if="type == 'file'" :class="getCSSClasses()">
     <label for="image">{{ label }}</label>
-    <input style="display: none;" type="file" id="image" name="image" :value="getAttributeValue()" />
+    <input style="display: none;" type="file" id="image" name="image" @change="handleFileUpload" />
     <div class="image-choice">
-      <img v-if="getAttributeValue() !== ''" :src="getAttributeValue()" alt="image" />
+      <img class="image-preview" v-if="dataStore.imageUrl !== ''" :src="dataStore.imageUrl" alt="image" />
       <p v-else>Aucune image</p>
-      <label class="label-for-file" for="image">
-        <img src="../assets/svg/upload.svg" title="Importer">
-      </label>
+      <div class="image-actions">
+        <a v-if="dataStore.imageUrl !== ''" href="javascript:void(0)" @click="deleteImage"><img
+            src="../assets/svg/delete.svg"></a>
+        <label class="label-for-file" for="image">
+          <img src="../assets/svg/upload.svg" title="Importer">
+        </label>
+      </div>
     </div>
   </div>
   <div v-else-if="type == 'picker'" :class="getCSSClasses()">
@@ -143,9 +197,28 @@ function getCSSClasses() {
       font-size: 15pt;
     }
 
-    & img {
-      height: 4rem;
-      width: 4rem;
+    & .image-actions {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+
+      & a {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & img {
+          height: 1.8rem;
+          width: 1.8rem;
+        }
+      }
+    }
+
+    & .image-preview {
+      height: 6rem;
       object-fit: contain;
     }
   }
