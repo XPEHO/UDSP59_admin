@@ -17,6 +17,24 @@ export class ModulePart {
     this.elements = elements;
   }
 
+  increaseElementOrder(eltIndex: number) {
+    if (eltIndex !== 0) {
+      let elt = this.elements[eltIndex];
+      let previousElt = this.elements[eltIndex - 1];
+      this.elements[eltIndex] = previousElt;
+      this.elements[eltIndex - 1] = elt;
+    }
+  }
+
+  decreaseElementOrder(eltIndex: number) {
+    if (eltIndex !== this.elements.length - 1) {
+      let elt = this.elements[eltIndex];
+      let nextElt = this.elements[eltIndex + 1];
+      this.elements[eltIndex] = nextElt;
+      this.elements[eltIndex + 1] = elt;
+    }
+  }
+
   toJsonObject() {
     return {
       image: this.image,
