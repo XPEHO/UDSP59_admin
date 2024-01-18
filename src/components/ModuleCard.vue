@@ -24,9 +24,7 @@ const props = defineProps({
 });
 
 function getCardTitle() {
-  if ('elt' in route.params) {
-    return ''
-  } else if ('part' in route.params) {
+  if ('part' in route.params) {
     let module = dataStore.moduleEdited
     let modulePart = module.parts[+route.params.part]
     let modulePartElement = modulePart.elements[props.index]
@@ -67,10 +65,11 @@ function getCardLink() {
 }
 
 function increaseOrder() {
-  if ('elt' in route.params) {
-    // Coming soon
-  } else if ('part' in route.params) {
-    // Coming soon
+  if ('part' in route.params) {
+    let module = dataStore.moduleEdited
+    let modulePart = module.parts[+route.params.part]
+    modulePart.increaseElementOrder(props.index);
+    dataStore.checkModuleEdition();
   } else if ('id' in route.params) {
     dataStore.moduleEdited.increasePartOrder(props.index);
     dataStore.checkModuleEdition();
@@ -80,10 +79,11 @@ function increaseOrder() {
 }
 
 function decreaseOrder() {
-  if ('elt' in route.params) {
-    // Coming soon
-  } else if ('part' in route.params) {
-    // Coming soon
+  if ('part' in route.params) {
+    let module = dataStore.moduleEdited
+    let modulePart = module.parts[+route.params.part]
+    modulePart.decreaseElementOrder(props.index);
+    dataStore.checkModuleEdition();
   } else if ('id' in route.params) {
     dataStore.moduleEdited.decreasePartOrder(props.index);
     dataStore.checkModuleEdition();
