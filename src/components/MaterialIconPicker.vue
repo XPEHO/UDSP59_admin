@@ -1,43 +1,38 @@
 <script setup lang="ts">
-
-import { useDataStore } from '@/stores/data';
-import { useRoute } from 'vue-router';
-import { onBeforeUnmount, onMounted } from 'vue';
-import { useMaterialIconsStore } from '@/stores/material-icons';
-
-// Get the route
-const route = useRoute()
+import { useDataStore } from "@/stores/data";
+import { onBeforeUnmount, onMounted } from "vue";
+import { useMaterialIconsStore } from "@/stores/material-icons";
 
 // Get the datas stores
-const dataStore = useDataStore()
-const materialIconsStore = useMaterialIconsStore()
+const dataStore = useDataStore();
+const materialIconsStore = useMaterialIconsStore();
 
 onMounted(() => {
-  let popupWrapper = document.querySelector('.popup-picker-wrapper') as HTMLElement;
-  let pickerButton = document.querySelector('.picker-button') as HTMLElement;
+  let popupWrapper = document.querySelector(".popup-picker-wrapper") as HTMLElement;
+  let pickerButton = document.querySelector(".picker-button") as HTMLElement;
   hide();
-  popupWrapper?.addEventListener('click', (e) => {
+  popupWrapper?.addEventListener("click", (e) => {
     if (e.target === popupWrapper) {
       hide();
     }
   });
-  pickerButton?.addEventListener('click', show);
+  pickerButton?.addEventListener("click", show);
 });
 
 onBeforeUnmount(() => {
-  let pickerButton = document.querySelector('.picker-button') as HTMLElement;
-  pickerButton?.removeEventListener('click', show);
+  let pickerButton = document.querySelector(".picker-button") as HTMLElement;
+  pickerButton?.removeEventListener("click", show);
 });
 
 function hide() {
-  let popupWrapper = document.querySelector('.popup-picker-wrapper') as HTMLElement;
-  popupWrapper.style.display = 'none';
+  let popupWrapper = document.querySelector(".popup-picker-wrapper") as HTMLElement;
+  popupWrapper.style.display = "none";
 }
 
 function show() {
-  let popupWrapper = document.querySelector('.popup-picker-wrapper') as HTMLElement;
-  popupWrapper.style.display = 'flex';
-  let searchInput = document.querySelector('.search-box input') as HTMLInputElement;
+  let popupWrapper = document.querySelector(".popup-picker-wrapper") as HTMLElement;
+  popupWrapper.style.display = "flex";
+  let searchInput = document.querySelector(".search-box input") as HTMLInputElement;
   searchInput.focus();
 }
 
@@ -48,10 +43,9 @@ function search(e: Event) {
 }
 
 function selectIcon(icon: string) {
-  dataStore.editModule('icon', icon);
+  dataStore.editModule("icon", icon);
   hide();
 }
-
 </script>
 
 <template>
@@ -59,12 +53,27 @@ function selectIcon(icon: string) {
     <div class="popup-picker">
       <h3 class="subtitle-style">Choisir une icone</h3>
       <div class="search-box">
-        <input type="text" @input="search">
-        <img src="../assets/svg/search.svg" alt="Search Icon">
+        <input
+          type="text"
+          @input="search"
+        />
+        <img
+          src="../assets/svg/search.svg"
+          alt="Search Icon"
+        />
       </div>
       <div class="icon-list">
-        <div v-for="icon in materialIconsStore.getSearchedIcons" class="icon-item" @click="selectIcon(icon)">
-          <i class="material-icons" :title="icon">{{ icon }}</i>
+        <div
+          v-for="icon in materialIconsStore.getSearchedIcons"
+          :key="icon"
+          class="icon-item"
+          @click="selectIcon(icon)"
+        >
+          <i
+            class="material-icons"
+            :title="icon"
+            >{{ icon }}</i
+          >
         </div>
       </div>
     </div>

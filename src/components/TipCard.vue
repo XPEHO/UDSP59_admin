@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores/data';
+import { useDataStore } from "@/stores/data";
 
 // Get the datas store
 const dataStore = useDataStore();
 
 // Properties of the component
-defineProps({
+const props = defineProps({
   index: {
     type: Number,
     required: true,
@@ -16,24 +16,40 @@ defineProps({
   },
 });
 
+function getTip() {
+  return props.tip;
+}
+
 function focusTextarea(event: MouseEvent) {
   // Get the textarea and focus it
-  let textarea = (event.target as HTMLElement).closest('.tip-card')?.querySelector('textarea') as HTMLTextAreaElement;
+  let textarea = (event.target as HTMLElement)
+    .closest(".tip-card")
+    ?.querySelector("textarea") as HTMLTextAreaElement;
   textarea.focus();
   // Scroll to the bottom of the textarea and focus the end of the text
   textarea.scrollTop = textarea.scrollHeight;
   textarea.setSelectionRange(textarea.value.length, textarea.value.length);
 }
-
 </script>
 
 <template>
   <div class="tip-card">
-    <textarea name="content"
-      @input="dataStore.editTip(index, ($event.target as HTMLTextAreaElement).value)">{{ tip }}</textarea>
+    <textarea
+      name="content"
+      v-model="getTip"
+      @input="dataStore.editTip(index, ($event.target as HTMLTextAreaElement).value)"
+    ></textarea>
     <div>
-      <a href="javascript:void(0)" @click="focusTextarea"><img src="../assets/svg/edit.svg"></a>
-      <a href="javascript:void(0)" @click="dataStore.deleteTip(index)"><img src="../assets/svg/delete.svg"></a>
+      <a
+        href="javascript:void(0)"
+        @click="focusTextarea"
+        ><img src="../assets/svg/edit.svg"
+      /></a>
+      <a
+        href="javascript:void(0)"
+        @click="dataStore.deleteTip(index)"
+        ><img src="../assets/svg/delete.svg"
+      /></a>
     </div>
   </div>
 </template>

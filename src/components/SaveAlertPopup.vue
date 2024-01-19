@@ -2,29 +2,20 @@
 // Public access to show function
 export const saveAlertPopup = reactive({
   continueChoice: null as boolean | null,
-  show: () => { },
+  show: () => {},
   setShowFunction(show: () => void) {
     this.show = show;
-  }
+  },
 });
 </script>
 
 <script setup lang="ts">
-
-import { useDataStore } from '@/stores/data';
-import { useRoute } from 'vue-router';
-import { onMounted, reactive } from 'vue';
-
-// Get the route
-const route = useRoute()
-
-// Get the datas store
-const dataStore = useDataStore()
+import { onMounted, reactive } from "vue";
 
 onMounted(() => {
   hide();
-  let popupWrapper = document.querySelector('.popup-save-alert-wrapper') as HTMLElement;
-  popupWrapper?.addEventListener('click', (e) => {
+  let popupWrapper = document.querySelector(".popup-save-alert-wrapper") as HTMLElement;
+  popupWrapper?.addEventListener("click", (e) => {
     if (e.target === popupWrapper) {
       cancel();
     }
@@ -32,13 +23,13 @@ onMounted(() => {
 });
 
 function hide() {
-  let popupWrapper = document.querySelector('.popup-save-alert-wrapper') as HTMLElement;
-  popupWrapper.style.display = 'none';
+  let popupWrapper = document.querySelector(".popup-save-alert-wrapper") as HTMLElement;
+  popupWrapper.style.display = "none";
 }
 
 function show() {
-  let popupWrapper = document.querySelector('.popup-save-alert-wrapper') as HTMLElement;
-  popupWrapper.style.display = 'flex';
+  let popupWrapper = document.querySelector(".popup-save-alert-wrapper") as HTMLElement;
+  popupWrapper.style.display = "flex";
 }
 
 function cancel() {
@@ -52,7 +43,6 @@ function continueWithoutSave() {
 }
 
 saveAlertPopup.setShowFunction(show);
-
 </script>
 
 <template>
@@ -61,8 +51,18 @@ saveAlertPopup.setShowFunction(show);
       <h3 class="subtitle-style">Attention !</h3>
       <p>Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir continuer ?</p>
       <div class="popup-buttons">
-        <button class="button-style" @click="cancel">Annuler</button>
-        <button class="button-style-hook" @click="continueWithoutSave">Continuer</button>
+        <button
+          class="button-style"
+          @click="cancel"
+        >
+          Annuler
+        </button>
+        <button
+          class="button-style-hook"
+          @click="continueWithoutSave"
+        >
+          Continuer
+        </button>
       </div>
     </div>
   </div>
@@ -129,7 +129,6 @@ saveAlertPopup.setShowFunction(show);
         color: var(--color-background);
       }
     }
-
   }
 }
 </style>

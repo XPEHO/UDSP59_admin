@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores/data';
-import { onMounted, ref } from 'vue';
-import Loader from '@/components/Loader.vue';
-import { useRoute } from 'vue-router';
-import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
+import { useDataStore } from "@/stores/data";
+import { onMounted, ref } from "vue";
+import AppLoader from "@/components/AppLoader.vue";
+import { useRoute } from "vue-router";
+import InputModuleAttribute from "@/components/InputModuleAttribute.vue";
 
 // Get the datas store
-const dataStore = useDataStore()
+const dataStore = useDataStore();
 
 // Get the route
 const route = useRoute();
@@ -18,14 +18,24 @@ onMounted(async () => {
   await dataStore.loadModuleFromFirebase(route.params.id as string);
   isLoading.value = false;
 });
-
 </script>
 
 <template>
-  <Loader v-if="isLoading" />
-  <main v-else class="module-part-elt-view">
-    <InputModuleAttribute attribute="text" label="Texte :" type="text" />
-    <InputModuleAttribute attribute="image" label="Image :" type="file" />
+  <AppLoader v-if="isLoading" />
+  <main
+    v-else
+    class="module-part-elt-view"
+  >
+    <InputModuleAttribute
+      attribute="text"
+      label="Texte :"
+      type="text"
+    />
+    <InputModuleAttribute
+      attribute="image"
+      label="Image :"
+      type="file"
+    />
   </main>
 </template>
 

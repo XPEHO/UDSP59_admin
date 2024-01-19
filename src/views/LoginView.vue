@@ -1,7 +1,6 @@
 <script setup lang="ts">
-
-import { useUserStore } from '../stores/user'
-import { useDataStore } from '../stores/data'
+import { useUserStore } from "../stores/user";
+import { useDataStore } from "../stores/data";
 
 // Get the stores
 const userStore = useUserStore();
@@ -10,25 +9,45 @@ const dataStore = useDataStore();
 // Reset the stores by default
 userStore.reset();
 dataStore.reset();
-
 </script>
 
 <template>
   <main class="login-view">
     <section>
-      <img src="../assets/logo.png" alt="Logo">
+      <img
+        src="../assets/logo.png"
+        alt="Logo"
+      />
     </section>
     <section>
       <h1 class="title-style">UDSP59 FORMATION</h1>
       <h2 class="subtitle-style">Espace Administrateur</h2>
-      <button class="google-button" @click="userStore.loginWithGoogle()">
-        <img src="../assets/google-logo.png" alt="Google logo">
+      <button
+        class="google-button"
+        @click="userStore.loginWithGoogle()"
+      >
+        <img
+          src="../assets/google-logo.png"
+          alt="Google logo"
+        />
         <span>Se connecter avec Google</span>
       </button>
       <footer>
-        <p class="link-text">Produit par <a class="link-text-clickable" href="https://xpeho.com/"
-            target="_blank">XPEHO</a></p>
-        <a class="link-text-clickable" href="" target="_blank">Politiques de confidentialité</a>
+        <p class="link-text">
+          Produit par
+          <a
+            class="link-text-clickable"
+            href="https://xpeho.com/"
+            target="_blank"
+            >XPEHO</a
+          >
+        </p>
+        <a
+          class="link-text-clickable"
+          href=""
+          target="_blank"
+          >Politiques de confidentialité</a
+        >
       </footer>
     </section>
   </main>
@@ -41,7 +60,8 @@ main.login-view {
   height: 100svh;
 
   & section:first-child {
-    background-image: url('../assets/background.png'), linear-gradient(to bottom, rgba(208, 129, 60, 0.9), rgba(186, 22, 38, 0.9));
+    background-image: url("../assets/background.png"),
+      linear-gradient(to bottom, rgba(208, 129, 60, 0.9), rgba(186, 22, 38, 0.9));
     background-position: center;
     background-size: cover;
     text-align: center;

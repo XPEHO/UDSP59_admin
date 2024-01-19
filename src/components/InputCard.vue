@@ -1,13 +1,8 @@
 <script setup lang="ts">
-
-import { useDataStore } from '@/stores/data';
-import { useRoute } from 'vue-router';
-
-// Get the datas store
-const dataStore = useDataStore()
+import { useRoute } from "vue-router";
 
 // Get the route
-const route = useRoute()
+const route = useRoute();
 
 // Properties of the component
 defineProps({
@@ -34,24 +29,30 @@ defineProps({
 });
 
 function getCSSClasses() {
-  let classes = 'input-card'
+  let classes = "input-card";
 
-  if ('elt' in route.params) {
-    classes += ' module-part-elt-input-card'
-  } else if ('part' in route.params) {
-    classes += ' module-part-input-card'
-  } else if ('id' in route.params) {
-    classes += ' module-input-card'
+  if ("elt" in route.params) {
+    classes += " module-part-elt-input-card";
+  } else if ("part" in route.params) {
+    classes += " module-part-input-card";
+  } else if ("id" in route.params) {
+    classes += " module-input-card";
   }
-  return classes
+  return classes;
 }
-
 </script>
 
 <template>
   <div :class="getCSSClasses()">
     <label :for="id">{{ label }}</label>
-    <input class="input-style" :type="type" :id="id" :name="id" :value="value" @input="action" />
+    <input
+      class="input-style"
+      :type="type"
+      :id="id"
+      :name="id"
+      :value="value"
+      @input="action"
+    />
   </div>
 </template>
 

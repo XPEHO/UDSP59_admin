@@ -1,21 +1,21 @@
-import { defineStore } from 'pinia'
-import { provider, auth, usersCollection } from '../firebase';
-import { signInWithPopup, signOut } from 'firebase/auth'
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import router from '@/router';
-import { useMaterialIconsStore } from './material-icons';
-import { useDataStore } from './data';
-import { saveAlertPopup } from '@/components/SaveAlertPopup.vue';
+import { defineStore } from "pinia";
+import { provider, auth, usersCollection } from "../firebase";
+import { signInWithPopup, signOut } from "firebase/auth";
+import { query, where, getDocs } from "firebase/firestore";
+import router from "@/router";
+import { useMaterialIconsStore } from "./material-icons";
+import { useDataStore } from "./data";
+import { saveAlertPopup } from "@/components/SaveAlertPopup.vue";
 
 interface UserState {
-  user: { email: string }
-  admin: Boolean
-  loggedIn: Boolean
+  user: { email: string };
+  admin: Boolean;
+  loggedIn: Boolean;
 }
 
-export const useUserStore = defineStore('userStore', {
+export const useUserStore = defineStore("userStore", {
   state: () => ({
-    user: { email: '' },
+    user: { email: "" },
     admin: false,
     loggedIn: false,
   }),
@@ -27,7 +27,7 @@ export const useUserStore = defineStore('userStore', {
   actions: {
     // ------------------------------- RESET LOCAL USER -------------------------------
     reset() {
-      this.user = { email: '' };
+      this.user = { email: "" };
       this.admin = false;
       this.loggedIn = false;
     },
@@ -35,33 +35,34 @@ export const useUserStore = defineStore('userStore', {
     // ------------------------------- SWITCH CONNEXION -------------------------------
     async logout() {
       // Check if the user needs to save his changes
-      const dataStore = useDataStore()
+      const dataStore = useDataStore();
       if (dataStore.needToSave) {
         if (saveAlertPopup) {
           // Display the save alert popup
-          saveAlertPopup.show()
+          saveAlertPopup.show();
           // Wait for the user to choose
           while (saveAlertPopup.continueChoice === null) {
-            await new Promise(resolve => setTimeout(resolve, 100))
+            await new Promise((resolve) => setTimeout(resolve, 100));
           }
           // Check if the user wants to continue
-          let shouldContinue = saveAlertPopup.continueChoice
-          saveAlertPopup.continueChoice = null
+          const shouldContinue = saveAlertPopup.continueChoice;
+          saveAlertPopup.continueChoice = null;
           if (!shouldContinue) {
-            return
+            return;
           }
         }
       }
       // Disconnect the user
       signOut(auth)
-        .then((result) => {
+        .then(() => {
           this.reset();
           // Get the datas store
-          const dataStore = useDataStore()
-          dataStore.reset()
-          router.replace({ name: 'Login' });
-        }).catch((error) => {
-          router.replace({ name: 'Login' });
+          const dataStore = useDataStore();
+          dataStore.reset();
+          router.replace({ name: "Login" });
+        })
+        .catch(() => {
+          router.replace({ name: "Login" });
         });
     },
 
@@ -70,7 +71,7 @@ export const useUserStore = defineStore('userStore', {
         .then(async (result) => {
           this.user = result.user as { email: string };
           // Check if user is connected with Googleata
-          if (this.user.email !== '') {
+          if (this.user.email !== "") {
             const q = query(usersCollection, where("mail", "==", this.user.email));
             const snapshot = await getDocs(q);
             // Check if user email exists in Firestore collection
@@ -83,18 +84,19 @@ export const useUserStore = defineStore('userStore', {
               // keep user and connexion and redirect to modules page
               this.loggedIn = true;
               this.admin = snapshot.docs[0].data().admin;
-              router.replace({ name: 'Modules' });
+              router.replace({ name: "Modules" });
             } else {
               // User email does not exist in Firestore collection, sign out and return error
               await auth.signOut();
-              router.replace({ name: 'Login' });
+              router.replace({ name: "Login" });
             }
           } else {
-            router.replace({ name: 'Login' });
+            router.replace({ name: "Login" });
           }
-        }).catch((error) => {
-          router.replace({ name: 'Login' });
+        })
+        .catch(() => {
+          router.replace({ name: "Login" });
         });
     },
-  }
-})
+  },
+});
