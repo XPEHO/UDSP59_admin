@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores/data';
-import { onMounted, ref } from 'vue';
-import Loader from '@/components/Loader.vue';
-import AccountCard from '@/components/AccountCard.vue';
+import { useDataStore } from "@/stores/data";
+import { onMounted, ref } from "vue";
+import AppLoader from "@/components/AppLoader.vue";
+import AccountCard from "@/components/AccountCard.vue";
 
 // Get the datas store
-const dataStore = useDataStore()
+const dataStore = useDataStore();
 
 // Load accounts from firebase before to display the view
 const isLoading = ref(true);
@@ -13,13 +13,20 @@ onMounted(async () => {
   await dataStore.loadAccountsFromFirebase();
   isLoading.value = false;
 });
-
 </script>
 
 <template>
-  <Loader v-if="isLoading" />
-  <main class="accounts-view" v-else>
-    <AccountCard v-for="[id, account] in dataStore.accountsEdited" :id="id" :account="account" />
+  <AppLoader v-if="isLoading" />
+  <main
+    class="accounts-view"
+    v-else
+  >
+    <AccountCard
+      v-for="[id, account] in dataStore.accountsEdited"
+      :key="id"
+      :id="id"
+      :account="account"
+    />
   </main>
 </template>
 

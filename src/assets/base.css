@@ -1,13 +1,13 @@
 /* semantic color variables for this project */
 :root {
-  --color-background: #FFFFFF;
+  --color-background: #ffffff;
 
   --color-primary-1: #251438;
-  --color-primary-2: #48355E;
-  --color-primary-3: #6B5583;
+  --color-primary-2: #48355e;
+  --color-primary-3: #6b5583;
   --color-primary-4: #8e76a9;
-  --color-secondary: #CF6C28;
-  --color-tertiary: #BA1626;
+  --color-secondary: #cf6c28;
+  --color-tertiary: #ba1626;
 
   --color-primary-transparent: rgba(69, 46, 97, 0.3);
 }
@@ -37,14 +37,7 @@ body {
     color 0.5s,
     background-color 0.5s;
   line-height: 1.6;
-  font-family:
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
@@ -55,7 +48,6 @@ body {
 #app {
   min-height: 100vh;
 }
-
 
 /* GENERAL STYLES */
 
@@ -94,8 +86,6 @@ body {
     -webkit-text-fill-color: #ffffff;
     -webkit-box-shadow: 0 0 0 30px var(--color-primary-1) inset;
   }
-
-
 }
 
 .button-style {

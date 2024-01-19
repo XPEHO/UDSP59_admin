@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores/data';
-import { onMounted, ref } from 'vue';
-import Loader from '@/components/Loader.vue';
-import { useRoute } from 'vue-router';
-import ModuleCard from '@/components/ModuleCard.vue';
-import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
-import MaterialIconPicker from '@/components/MaterialIconPicker.vue';
+import { useDataStore } from "@/stores/data";
+import { onMounted, ref } from "vue";
+import AppLoader from "@/components/AppLoader.vue";
+import { useRoute } from "vue-router";
+import ModuleCard from "@/components/ModuleCard.vue";
+import InputModuleAttribute from "@/components/InputModuleAttribute.vue";
+import MaterialIconPicker from "@/components/MaterialIconPicker.vue";
 
 // Get the datas store
-const dataStore = useDataStore()
+const dataStore = useDataStore();
 
 // Get the route
 const route = useRoute();
@@ -21,27 +21,45 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
-
 // Check if parts array is empty
 function isPartsArrayEmpty(): boolean {
   return dataStore.moduleEdited.parts?.length == 0;
 }
-
 </script>
 
 <template>
-  <Loader v-if="isLoading" />
-  <main v-else class="module-view">
-    <InputModuleAttribute attribute="title" label="Titre :" type="text" />
-    <InputModuleAttribute attribute="image" label="Image :" type="file" />
-    <InputModuleAttribute attribute="icon" label="Icône :" type="picker" />
+  <AppLoader v-if="isLoading" />
+  <main
+    v-else
+    class="module-view"
+  >
+    <InputModuleAttribute
+      attribute="title"
+      label="Titre :"
+      type="text"
+    />
+    <InputModuleAttribute
+      attribute="image"
+      label="Image :"
+      type="file"
+    />
+    <InputModuleAttribute
+      attribute="icon"
+      label="Icône :"
+      type="picker"
+    />
     <h2 class="subtitle-style">Parties du module :</h2>
     <div class="module-part-list">
       <div v-if="isPartsArrayEmpty()">
         <p>Aucune partie pour le moment.</p>
       </div>
-      <ModuleCard v-else v-for="(modulePart, index) in dataStore.moduleEdited.parts" :id="(route.params.id as string)"
-        :index="index" />
+      <ModuleCard
+        v-else
+        v-for="(modulePart, index) in dataStore.moduleEdited.parts"
+        :key="index"
+        :id="route.params.id as string"
+        :index="index"
+      />
     </div>
     <MaterialIconPicker />
   </main>

@@ -1,87 +1,117 @@
 <script setup lang="ts">
-
-import { useRoute } from 'vue-router';
-import { useUserStore } from '../stores/user'
-import { useDataStore } from '../stores/data'
-import router from '@/router';
-import AddPopup from '@/components/AddPopup.vue';
-import SaveAlertPopup from '@/components/SaveAlertPopup.vue';
+import { useRoute } from "vue-router";
+import { useUserStore } from "../stores/user";
+import { useDataStore } from "../stores/data";
+import router from "@/router";
+import AddPopup from "@/components/AddPopup.vue";
+import SaveAlertPopup from "@/components/SaveAlertPopup.vue";
 
 // Get the stores
-const userStore = useUserStore()
-const dataStore = useDataStore()
+const userStore = useUserStore();
+const dataStore = useDataStore();
 
 // Get the route
-const route = useRoute()
+const route = useRoute();
 
 // Save to firebase
 function saveToFirebase() {
-  if (route.name == 'Modules') dataStore.saveModulesToFirebase()
-  if (route.name == 'Tips') dataStore.saveTipsToFirebase()
-  if (route.name == 'Accounts') dataStore.saveAccountsToFirebase()
-  if (route.path.includes('/module/')) dataStore.saveModuleToFirebase(route.params.id as string)
+  if (route.name == "Modules") dataStore.saveModulesToFirebase();
+  if (route.name == "Tips") dataStore.saveTipsToFirebase();
+  if (route.name == "Accounts") dataStore.saveAccountsToFirebase();
+  if (route.path.includes("/module/")) dataStore.saveModuleToFirebase(route.params.id as string);
 }
 
 // Reload the page
 function reload() {
-  if (route.name == 'Modules') dataStore.loadModulesFromFirebase()
-  if (route.name == 'Tips') dataStore.loadTipsFromFirebase()
-  if (route.name == 'Accounts') dataStore.loadAccountsFromFirebase()
-  if (route.path.includes('/module/')) {
+  if (route.name == "Modules") dataStore.loadModulesFromFirebase();
+  if (route.name == "Tips") dataStore.loadTipsFromFirebase();
+  if (route.name == "Accounts") dataStore.loadAccountsFromFirebase();
+  if (route.path.includes("/module/")) {
     dataStore.currentRoute = route;
-    dataStore.loadModuleFromFirebase(route.params.id as string)
+    dataStore.loadModuleFromFirebase(route.params.id as string);
   }
 }
 
 // Get breadcrumbs using the route params
 function getBreadcrumbs() {
   if (dataStore.moduleEdited.title) {
-    let breadcrumbs = dataStore.moduleEdited.title
-    if ('part' in route.params) breadcrumbs += '.' + ((+route.params.part) + 1)
-    if ('elt' in route.params) breadcrumbs += '.' + ((+route.params.elt) + 1)
-    return breadcrumbs
+    let breadcrumbs = dataStore.moduleEdited.title;
+    if ("part" in route.params) breadcrumbs += "." + (+route.params.part + 1);
+    if ("elt" in route.params) breadcrumbs += "." + (+route.params.elt + 1);
+    return breadcrumbs;
   } else {
-    return ''
+    return "";
   }
 }
-
 </script>
 
 <template>
   <main class="page-view">
     <section class="side-bar">
-      <img src="../assets/logo.png" alt="Logo">
+      <img
+        src="../assets/logo.png"
+        alt="Logo"
+      />
       <nav>
         <RouterLink to="/modules">Modules</RouterLink>
         <RouterLink to="/tips">Astuces</RouterLink>
-        <RouterLink to="/accounts" v-if="userStore.isAdmin">Comptes</RouterLink>
+        <RouterLink
+          to="/accounts"
+          v-if="userStore.isAdmin"
+          >Comptes</RouterLink
+        >
       </nav>
     </section>
     <section class="content">
       <header>
         <div>
           <h1 class="title-style">UDSP59 FORMATION</h1>
-          <h2 v-if="route.path.includes('/module/')" class="subtitle-style">
+          <h2
+            v-if="route.path.includes('/module/')"
+            class="subtitle-style"
+          >
             {{ getBreadcrumbs() }}
           </h2>
         </div>
-        <button class="disconnect-button" @click="userStore.logout()" title="Se déconnecter">
-          <img src="../assets/svg/disconnect.svg">
+        <button
+          class="disconnect-button"
+          @click="userStore.logout()"
+          title="Se déconnecter"
+        >
+          <img src="../assets/svg/disconnect.svg" />
         </button>
       </header>
 
       <div class="actions">
-        <button v-if="route.path.includes('/module/')" @click="router.back()" title="Revenir en arrière">
-          <img src="../assets/svg/chevron-left.svg">
+        <button
+          v-if="route.path.includes('/module/')"
+          @click="router.back()"
+          title="Revenir en arrière"
+        >
+          <img src="../assets/svg/chevron-left.svg" />
         </button>
-        <button v-if="route.name !== 'ModulePartElement'" class="add-button" title="Ajouter">
-          <img src="../assets/svg/add.svg">
+        <button
+          v-if="route.name !== 'ModulePartElement'"
+          class="add-button"
+          title="Ajouter"
+        >
+          <img src="../assets/svg/add.svg" />
         </button>
-        <button v-if="dataStore.needToSave" class="changes-button" @click="saveToFirebase" title="Enregistrer">
-          <img src="../assets/svg/save.svg">
+        <button
+          v-if="dataStore.needToSave"
+          class="changes-button"
+          @click="saveToFirebase"
+          title="Enregistrer"
+        >
+          <img src="../assets/svg/save.svg" />
           <p>Enregistrer</p>
         </button>
-        <button v-if="dataStore.needToSave" class="changes-button" @click="reload" title="Réinitialiser">
+        <button
+          v-if="dataStore.needToSave"
+          class="changes-button"
+          @click="reload"
+          title="Réinitialiser"
+        >
           <p>Réinitialiser</p>
         </button>
       </div>
@@ -99,7 +129,8 @@ main.page-view {
   height: 100svh;
 
   & section.side-bar {
-    background-image: url('../assets/background.png'), linear-gradient(to bottom, rgba(208, 129, 60, 0.9), rgba(186, 22, 38, 0.9));
+    background-image: url("../assets/background.png"),
+      linear-gradient(to bottom, rgba(208, 129, 60, 0.9), rgba(186, 22, 38, 0.9));
     background-position: center;
     background-size: cover;
     text-align: center;

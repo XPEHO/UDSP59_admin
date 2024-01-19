@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores/data';
-import { onMounted, ref } from 'vue';
-import Loader from '@/components/Loader.vue';
-import { useRoute } from 'vue-router';
-import ModuleCard from '@/components/ModuleCard.vue';
-import InputModuleAttribute from '@/components/InputModuleAttribute.vue';
-import type { ModulePart } from '@/models/ModulePart';
+import { useDataStore } from "@/stores/data";
+import { onMounted, ref } from "vue";
+import AppLoader from "@/components/AppLoader.vue";
+import { useRoute } from "vue-router";
+import ModuleCard from "@/components/ModuleCard.vue";
+import InputModuleAttribute from "@/components/InputModuleAttribute.vue";
 
 // Get the datas store
-const dataStore = useDataStore()
+const dataStore = useDataStore();
 
 // Get the route
 const route = useRoute();
@@ -25,7 +24,7 @@ onMounted(async () => {
 function getCurrentPart() {
   try {
     let currentPartIndex = +route.params.part;
-    return dataStore.moduleEdited.parts[currentPartIndex]
+    return dataStore.moduleEdited.parts[currentPartIndex];
   } catch (error) {
     return null;
   }
@@ -39,21 +38,36 @@ function isElementsArrayEmpty(): boolean {
     return true;
   }
 }
-
 </script>
 
 <template>
-  <Loader v-if="isLoading" />
-  <main v-else class="module-part-view">
-    <InputModuleAttribute attribute="subtitle" label="Titre :" type="text" />
-    <InputModuleAttribute attribute="image" label="Image :" type="file" />
+  <AppLoader v-if="isLoading" />
+  <main
+    v-else
+    class="module-part-view"
+  >
+    <InputModuleAttribute
+      attribute="subtitle"
+      label="Titre :"
+      type="text"
+    />
+    <InputModuleAttribute
+      attribute="image"
+      label="Image :"
+      type="file"
+    />
     <h2 class="subtitle-style">Elements de la partie du module :</h2>
     <div class="module-part-elt-list">
       <div v-if="isElementsArrayEmpty()">
         <p>Aucun éléments pour le moment.</p>
       </div>
-      <ModuleCard v-else v-for="(modulePartElt, index) in getCurrentPart()?.elements" :id="(route.params.id as string)"
-        :index="index" />
+      <ModuleCard
+        v-else
+        v-for="(modulePartElt, index) in getCurrentPart()?.elements"
+        :key="index"
+        :id="route.params.id as string"
+        :index="index"
+      />
     </div>
   </main>
 </template>
