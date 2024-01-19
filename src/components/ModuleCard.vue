@@ -40,10 +40,11 @@ function getCardTitle() {
 }
 
 function deleteCard() {
-  if ('elt' in route.params) {
-    // Coming soon
-  } else if ('part' in route.params) {
-    // Coming soon
+  if ('part' in route.params) {
+    let module = dataStore.moduleEdited
+    let modulePart = module.parts[+route.params.part]
+    modulePart.deleteElement(props.index);
+    dataStore.checkModuleEdition();
   } else if ('id' in route.params) {
     dataStore.moduleEdited.deletePart(props.index);
     dataStore.checkModuleEdition();
