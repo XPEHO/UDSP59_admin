@@ -35,6 +35,14 @@ export class ModulePart {
     }
   }
 
+  deleteElement(eltIndex: number) {
+    this.elements.splice(eltIndex, 1);
+  }
+
+  addElement(element: ModulePartElement) {
+    this.elements.push(element);
+  }
+
   toJsonObject() {
     return {
       image: this.image,
