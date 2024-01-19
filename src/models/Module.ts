@@ -1,7 +1,5 @@
-import { getDownloadURL, ref } from 'firebase/storage';
-import { ModulePart } from './ModulePart';
-import { useDataStore } from '@/stores/data';
-import { storage } from '@/firebase';
+import { ModulePart } from "./ModulePart";
+import { useDataStore } from "@/stores/data";
 
 export class Module {
   id: string;
@@ -13,7 +11,14 @@ export class Module {
   parts: Array<ModulePart>;
   [key: string]: any;
 
-  constructor(id: string, icon: string, image: string, title: string, order: number, parts: Array<ModulePart>) {
+  constructor(
+    id: string,
+    icon: string,
+    image: string,
+    title: string,
+    order: number,
+    parts: Array<ModulePart>,
+  ) {
     this.id = id;
     this.icon = icon;
     this.image = image;
@@ -25,8 +30,8 @@ export class Module {
 
   increasePartOrder(partIndex: number) {
     if (partIndex !== 0) {
-      let part = this.parts[partIndex];
-      let previousPart = this.parts[partIndex - 1];
+      const part = this.parts[partIndex];
+      const previousPart = this.parts[partIndex - 1];
       this.parts[partIndex] = previousPart;
       this.parts[partIndex - 1] = part;
     }
@@ -34,8 +39,8 @@ export class Module {
 
   decreasePartOrder(partIndex: number) {
     if (partIndex !== this.parts.length - 1) {
-      let part = this.parts[partIndex];
-      let nextPart = this.parts[partIndex + 1];
+      const part = this.parts[partIndex];
+      const nextPart = this.parts[partIndex + 1];
       this.parts[partIndex] = nextPart;
       this.parts[partIndex + 1] = part;
     }
@@ -55,18 +60,20 @@ export class Module {
       image: this.image,
       title: this.title,
       order: this.order,
-      parts: this.parts.map((part) => part.toJsonObject())
-    }
+      parts: this.parts.map((part) => part.toJsonObject()),
+    };
   }
 
   equals(module: Module) {
-    return this.icon === module.icon
-      && this.image === module.image
-      && this.file === module.file
-      && this.title === module.title
-      && this.order === module.order
-      && this.parts.length === module.parts.length
-      && this.parts.every((part, index) => part.equals(module.parts[index]));
+    return (
+      this.icon === module.icon &&
+      this.image === module.image &&
+      this.file === module.file &&
+      this.title === module.title &&
+      this.order === module.order &&
+      this.parts.length === module.parts.length &&
+      this.parts.every((part, index) => part.equals(module.parts[index]))
+    );
   }
 
   clone() {
@@ -76,7 +83,7 @@ export class Module {
       this.image,
       this.title,
       this.order,
-      this.parts.map((part) => part.clone())
+      this.parts.map((part) => part.clone()),
     );
   }
 
@@ -87,22 +94,24 @@ export class Module {
     // Check if the file property is defined
     if (this.file) {
       // Upload the file to firebase
-      let newRef = `modules/${this.id}/${this.file.name}`
-      await dataStore.uploadFileToFirebase(this.file, newRef, this.image)
-      this.image = newRef
+      const newRef = `modules/${this.id}/${this.file.name}`;
+      await dataStore.uploadFileToFirebase(this.file, newRef, this.image);
+      this.image = newRef;
     }
 
     // Check if we need to delete image
-    if (this.image == '' && originModule && this.image !== originModule.image) {
+    if (this.image == "" && originModule && this.image !== originModule.image) {
       // Delete the image from firebase
-      await dataStore.deleteFileFromFirebase(originModule.image)
+      await dataStore.deleteFileFromFirebase(originModule.image);
     }
 
     // Upload the images of the parts to firebase
     if (this.parts.length !== 0) {
-      await Promise.all(this.parts.map((part, index) => {
-        return part.uploadImagesToFirebase(originModule.parts[index], this.id, index);
-      }));
+      await Promise.all(
+        this.parts.map((part, index) => {
+          return part.uploadImagesToFirebase(originModule.parts[index], this.id, index);
+        }),
+      );
     }
   }
 }

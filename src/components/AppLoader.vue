@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted } from "vue";
 
 // Display the loader after 500ms
 onMounted(() => {
@@ -11,24 +11,23 @@ onMounted(() => {
     }
   }, 500);
 });
-
 </script>
 
 <template>
-  <div class="loader-wrapper">
-    <div class="loader"></div>
+  <div class="app-loader-wrapper">
+    <div class="app-loader"></div>
   </div>
 </template>
 
 <style>
-.loader-wrapper {
+.app-loader-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
   width: 100%;
 
-  & .loader {
+  & .app-loader {
     display: none;
     border: 5px solid;
     border-color: var(--color-secondary) transparent var(--color-secondary) transparent;
@@ -38,7 +37,6 @@ onMounted(() => {
     animation: spin 1s linear infinite;
   }
 }
-
 
 @keyframes spin {
   0% {

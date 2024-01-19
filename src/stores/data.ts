@@ -1,30 +1,30 @@
-import { defineStore } from 'pinia'
-import { areMapsEqual } from '../utilities/functions';
-import { modulesCollection, storage, tipsCollection, usersCollection } from '../firebase';
-import { getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { Account } from '../models/Account';
-import { Module } from '../models/Module';
-import { ModulePart } from '../models/ModulePart';
-import { ModulePartElement } from '../models/ModulePartElement';
-import router from '@/router';
-import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { useRoute, type RouteLocationNormalizedLoaded } from 'vue-router';
+import { defineStore } from "pinia";
+import { areMapsEqual } from "../utilities/functions";
+import { modulesCollection, storage, tipsCollection, usersCollection } from "../firebase";
+import { getDocs, getDoc, doc, setDoc, addDoc, deleteDoc } from "firebase/firestore";
+import { Account } from "../models/Account";
+import { Module } from "../models/Module";
+import { ModulePart } from "../models/ModulePart";
+import { ModulePartElement } from "../models/ModulePartElement";
+import router from "@/router";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { type RouteLocationNormalizedLoaded } from "vue-router";
 
 interface DataState {
-  tips: Array<string>
-  accounts: Map<string, Account>
-  modules: Map<string, Module>
-  module: Module
-  modulesEdited: Map<string, Module>
-  accountsEdited: Map<string, Account>
-  tipsEdited: Array<string>
-  moduleEdited: Module
-  currentRoute: RouteLocationNormalizedLoaded
-  imageUrl: string
-  toSave: boolean
+  tips: Array<string>;
+  accounts: Map<string, Account>;
+  modules: Map<string, Module>;
+  module: Module;
+  modulesEdited: Map<string, Module>;
+  accountsEdited: Map<string, Account>;
+  tipsEdited: Array<string>;
+  moduleEdited: Module;
+  currentRoute: RouteLocationNormalizedLoaded;
+  imageUrl: string;
+  toSave: boolean;
 }
 
-export const useDataStore = defineStore('dataStore', {
+export const useDataStore = defineStore("dataStore", {
   state: () => ({
     tips: Array<string>(),
     accounts: new Map<string, Account>(),
@@ -35,7 +35,7 @@ export const useDataStore = defineStore('dataStore', {
     tipsEdited: Array<string>(),
     moduleEdited: {} as Module,
     currentRoute: {} as RouteLocationNormalizedLoaded,
-    imageUrl: '',
+    imageUrl: "",
     toSave: false,
   }),
   getters: {
@@ -62,7 +62,7 @@ export const useDataStore = defineStore('dataStore', {
       this.accountsEdited = new Map<string, Account>();
       this.tipsEdited = Array<string>();
       this.moduleEdited = {} as Module;
-      this.imageUrl = '';
+      this.imageUrl = "";
       this.toSave = false;
     },
 
@@ -88,7 +88,7 @@ export const useDataStore = defineStore('dataStore', {
     addModule(module: Module) {
       // Check if title is already used
       let titleAlreadyUsed = false;
-      for (let moduleCheck of this.modulesEdited.values()) {
+      for (const moduleCheck of this.modulesEdited.values()) {
         if (moduleCheck.title === module.title) {
           titleAlreadyUsed = true;
         }
@@ -104,7 +104,7 @@ export const useDataStore = defineStore('dataStore', {
       this.modulesEdited.delete(id);
       // Update order
       let order = 0;
-      for (let module of this.getSortedModules()) {
+      for (const module of this.getSortedModules()) {
         order++;
         module.order = order;
       }
@@ -123,9 +123,9 @@ export const useDataStore = defineStore('dataStore', {
     },
     increaseModuleOrder(id: string) {
       // Change local datas to increase module order
-      let module = this.modulesEdited.get(id);
+      const module = this.modulesEdited.get(id);
       if (module && module.order !== 1) {
-        for (let moduleToSwitch of this.modulesEdited.values()) {
+        for (const moduleToSwitch of this.modulesEdited.values()) {
           if (moduleToSwitch.order === module.order - 1) {
             moduleToSwitch.order++;
             break;
@@ -138,9 +138,9 @@ export const useDataStore = defineStore('dataStore', {
     },
     decreaseModuleOrder(id: string) {
       // Change local datas to decrease module order
-      let module = this.modulesEdited.get(id);
+      const module = this.modulesEdited.get(id);
       if (module && module.order !== this.modulesEdited.size) {
-        for (let moduleToSwitch of this.modulesEdited.values()) {
+        for (const moduleToSwitch of this.modulesEdited.values()) {
           if (moduleToSwitch.order === module.order + 1) {
             moduleToSwitch.order--;
             break;
@@ -153,7 +153,7 @@ export const useDataStore = defineStore('dataStore', {
     },
     getSortedModules() {
       // Get sorted modules
-      let sortedModules = Array.from(this.modulesEdited.values());
+      const sortedModules = Array.from(this.modulesEdited.values());
       sortedModules.sort((a, b) => a.order - b.order);
       return sortedModules;
     },
@@ -198,7 +198,7 @@ export const useDataStore = defineStore('dataStore', {
     addAccount(account: Account) {
       // Check if mail is already used
       let mailAlreadyUsed = false;
-      for (let accountCheck of this.accountsEdited.values()) {
+      for (const accountCheck of this.accountsEdited.values()) {
         if (accountCheck.mail === account.mail) {
           mailAlreadyUsed = true;
         }
@@ -218,7 +218,7 @@ export const useDataStore = defineStore('dataStore', {
     },
     editAccount(id: string, attribute: string, value: any) {
       // Change local datas to edit account
-      let account = this.accountsEdited.get(id);
+      const account = this.accountsEdited.get(id);
       if (account) {
         (account as { [key: string]: any })[attribute] = value;
       }
@@ -229,7 +229,7 @@ export const useDataStore = defineStore('dataStore', {
     // ------------------------- SEND LOCAL DATAS TO FIREBASE -------------------------
     saveModulesToFirebase: async function () {
       // Add new modules
-      for (let [id, module] of this.modulesEdited.entries()) {
+      for (const [id, module] of this.modulesEdited.entries()) {
         if (!this.modules.has(id)) {
           // This is a new module
           await addDoc(modulesCollection, module.toJsonObject());
@@ -239,7 +239,7 @@ export const useDataStore = defineStore('dataStore', {
         }
       }
       // Delete accounts
-      for (let id of this.modules.keys()) {
+      for (const id of this.modules.keys()) {
         if (!this.modulesEdited.has(id)) {
           // This module has been deleted
           await deleteDoc(doc(modulesCollection, id));
@@ -249,9 +249,9 @@ export const useDataStore = defineStore('dataStore', {
     },
     saveModuleToFirebase: async function (id: string) {
       // Upload images to firebase
-      await this.moduleEdited.uploadImagesToFirebase(this.module)
+      await this.moduleEdited.uploadImagesToFirebase(this.module);
       // Replace existing module
-      await setDoc(doc(modulesCollection, id), this.moduleEdited.toJsonObject())
+      await setDoc(doc(modulesCollection, id), this.moduleEdited.toJsonObject());
       // Reload module
       await this.loadModuleFromFirebase(id);
     },
@@ -263,7 +263,7 @@ export const useDataStore = defineStore('dataStore', {
     },
     saveAccountsToFirebase: async function () {
       // Add new accounts and edit existing accounts
-      for (let [id, account] of this.accountsEdited.entries()) {
+      for (const [id, account] of this.accountsEdited.entries()) {
         if (!this.accounts.has(id)) {
           // This is a new account
           await addDoc(usersCollection, account.toJsonObject());
@@ -274,7 +274,7 @@ export const useDataStore = defineStore('dataStore', {
       }
 
       // Delete accounts
-      for (let id of this.accounts.keys()) {
+      for (const id of this.accounts.keys()) {
         if (!this.accountsEdited.has(id)) {
           // This account has been deleted
           await deleteDoc(doc(usersCollection, id));
@@ -285,22 +285,24 @@ export const useDataStore = defineStore('dataStore', {
     },
     uploadFileToFirebase: async function (file: File, newRef: string, oldRef: string) {
       // Create a storage reference
-      let storageRef = ref(storage, newRef);
+      const storageRef = ref(storage, newRef);
 
       // Upload the new file
-      await uploadBytes(storageRef, file).then(async (snapshot) => {
-        // Remove old file if exists
-        if (oldRef !== '') {
-          await this.deleteFileFromFirebase(oldRef);
-        }
-      }).catch((error) => {
-        console.error(error)
-      });
+      await uploadBytes(storageRef, file)
+        .then(async () => {
+          // Remove old file if exists
+          if (oldRef !== "") {
+            await this.deleteFileFromFirebase(oldRef);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
     deleteFileFromFirebase: async function (oldRef: string) {
       // Delete the file from firebase
-      let storageRef = ref(storage, oldRef)
-      await deleteObject(storageRef)
+      const storageRef = ref(storage, oldRef);
+      await deleteObject(storageRef);
     },
 
     // ------------------------- LOAD FIREBASE DATAS TO LOCAL -------------------------
@@ -311,13 +313,13 @@ export const useDataStore = defineStore('dataStore', {
       const tipsSnapshot = await getDoc(doc(tipsCollection, "tips"));
       // Add to array
       if (tipsSnapshot.exists()) {
-        for (let tip of tipsSnapshot.data().content) {
+        for (const tip of tipsSnapshot.data().content) {
           this.tips.push(tip);
           this.tipsEdited.push(tip);
         }
       } else {
         // Tips does not exist in Firestore collection, redirect on modules page
-        router.replace({ name: 'Modules' });
+        router.replace({ name: "Modules" });
       }
     },
     loadAccountsFromFirebase: async function () {
@@ -327,8 +329,8 @@ export const useDataStore = defineStore('dataStore', {
       const accountsSnapshot = await getDocs(usersCollection);
       // Add to array
       accountsSnapshot.forEach((doc) => {
-        let account = new Account(doc.data().mail, doc.data().admin);
-        let accountEdited = new Account(account.mail, account.admin);
+        const account = new Account(doc.data().mail, doc.data().admin);
+        const accountEdited = new Account(account.mail, account.admin);
         this.accounts.set(doc.id, account);
         this.accountsEdited.set(doc.id, accountEdited);
       });
@@ -341,12 +343,12 @@ export const useDataStore = defineStore('dataStore', {
       // Add to array
       modulesSnapshot.forEach((doc) => {
         let modulePartElements = Array<ModulePartElement>();
-        let moduleParts = Array<ModulePart>();
+        const moduleParts = Array<ModulePart>();
         let modulePart = {} as ModulePart;
         let modulePartElement = {} as ModulePartElement;
 
-        for (let part of doc.data().parts) {
-          for (let element of part.elements) {
+        for (const part of doc.data().parts) {
+          for (const element of part.elements) {
             modulePartElement = new ModulePartElement(element.image, element.text);
             modulePartElements.push(modulePartElement);
           }
@@ -355,8 +357,15 @@ export const useDataStore = defineStore('dataStore', {
 
           modulePartElements = Array<ModulePartElement>();
         }
-        let module = new Module(doc.id, doc.data().icon, doc.data().image, doc.data().title, doc.data().order, moduleParts);
-        let moduleEdited = module.clone();
+        const module = new Module(
+          doc.id,
+          doc.data().icon,
+          doc.data().image,
+          doc.data().title,
+          doc.data().order,
+          moduleParts,
+        );
+        const moduleEdited = module.clone();
         this.modules.set(doc.id, module);
         this.modulesEdited.set(doc.id, moduleEdited);
       });
@@ -368,15 +377,15 @@ export const useDataStore = defineStore('dataStore', {
       const moduleSnapshot = await getDoc(doc(modulesCollection, id));
       // Check if module exists in Firestore collection
       if (moduleSnapshot.exists()) {
-        let doc = moduleSnapshot;
+        const doc = moduleSnapshot;
         // Module exists in Firestore collection, we can load it
         let modulePartElements = Array<ModulePartElement>();
-        let moduleParts = Array<ModulePart>();
+        const moduleParts = Array<ModulePart>();
         let modulePart = {} as ModulePart;
         let modulePartElement = {} as ModulePartElement;
 
-        for (let part of doc.data().parts) {
-          for (let element of part.elements) {
+        for (const part of doc.data().parts) {
+          for (const element of part.elements) {
             modulePartElement = new ModulePartElement(element.image, element.text);
             modulePartElements.push(modulePartElement);
           }
@@ -385,49 +394,56 @@ export const useDataStore = defineStore('dataStore', {
 
           modulePartElements = Array<ModulePartElement>();
         }
-        this.module = new Module(doc.id, doc.data().icon, doc.data().image, doc.data().title, doc.data().order, moduleParts);
+        this.module = new Module(
+          doc.id,
+          doc.data().icon,
+          doc.data().image,
+          doc.data().title,
+          doc.data().order,
+          moduleParts,
+        );
         this.moduleEdited = this.module.clone();
         await this.loadImageUrl();
       } else {
         // Module does not exist in Firestore collection, redirect on modules page
-        router.replace({ name: 'Modules' });
+        router.replace({ name: "Modules" });
       }
     },
     loadImageUrl: async function () {
-      let module = this.moduleEdited
-      let route = this.currentRoute
+      const module = this.moduleEdited;
+      const route = this.currentRoute;
 
       // Get the url of the image
-      let url
-      if ('elt' in route.params) {
-        let modulePart = module.parts[+route.params.part]
-        let modulePartElement = modulePart.elements[+route.params.elt]
+      let url;
+      if ("elt" in route.params) {
+        const modulePart = module.parts[+route.params.part];
+        const modulePartElement = modulePart.elements[+route.params.elt];
         if (modulePartElement.file) {
-          url = URL.createObjectURL(modulePartElement.file)
-        } else if (modulePartElement.image !== '') {
-          url = await getDownloadURL(ref(storage, modulePartElement.image))
+          url = URL.createObjectURL(modulePartElement.file);
+        } else if (modulePartElement.image !== "") {
+          url = await getDownloadURL(ref(storage, modulePartElement.image));
         } else {
-          url = ''
+          url = "";
         }
-      } else if ('part' in route.params) {
-        let modulePart = module.parts[+route.params.part]
+      } else if ("part" in route.params) {
+        const modulePart = module.parts[+route.params.part];
         if (modulePart.file) {
-          url = URL.createObjectURL(modulePart.file)
-        } else if (modulePart.image !== '') {
-          url = await getDownloadURL(ref(storage, modulePart.image))
+          url = URL.createObjectURL(modulePart.file);
+        } else if (modulePart.image !== "") {
+          url = await getDownloadURL(ref(storage, modulePart.image));
         } else {
-          url = ''
+          url = "";
         }
       } else {
         if (module.file) {
-          url = URL.createObjectURL(module.file)
-        } else if (module.image !== '') {
-          url = await getDownloadURL(ref(storage, module.image))
+          url = URL.createObjectURL(module.file);
+        } else if (module.image !== "") {
+          url = await getDownloadURL(ref(storage, module.image));
         } else {
-          url = ''
+          url = "";
         }
       }
-      this.imageUrl = url
+      this.imageUrl = url;
     },
-  }
-})
+  },
+});

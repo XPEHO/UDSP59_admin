@@ -1,12 +1,12 @@
-import { defineStore } from 'pinia'
-import axios from 'axios';
+import { defineStore } from "pinia";
+import axios from "axios";
 
 interface MaterialIconsState {
-  icons: Array<string>
-  searchedIcons: Array<string>
+  icons: Array<string>;
+  searchedIcons: Array<string>;
 }
 
-export const useMaterialIconsStore = defineStore('materialIconsStore', {
+export const useMaterialIconsStore = defineStore("materialIconsStore", {
   state: () => ({
     icons: [],
     searchedIcons: [],
@@ -17,15 +17,18 @@ export const useMaterialIconsStore = defineStore('materialIconsStore', {
   },
   actions: {
     search(query: string) {
-      if (query === '') return (this.searchedIcons = this.icons);
+      if (query === "") return (this.searchedIcons = this.icons);
       this.searchedIcons = this.icons.filter((icon: string) => icon.includes(query));
     },
     async load() {
-      const { data } = await axios.get('https://raw.githubusercontent.com/google/material-design-icons/main/font/MaterialIcons-Regular.codepoints');
-      this.icons = data.split('\n')
-        .filter((line: string) => line.trim() !== '')
-        .map((line: string) => line.split(' ')[0]);
+      const { data } = await axios.get(
+        "https://raw.githubusercontent.com/google/material-design-icons/main/font/MaterialIcons-Regular.codepoints",
+      );
+      this.icons = data
+        .split("\n")
+        .filter((line: string) => line.trim() !== "")
+        .map((line: string) => line.split(" ")[0]);
       this.searchedIcons = this.icons;
-    }
-  }
-})
+    },
+  },
+});

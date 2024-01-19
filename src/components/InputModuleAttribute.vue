@@ -1,14 +1,13 @@
 <script setup lang="ts">
-
-import InputCard from '@/components/InputCard.vue';
-import { useDataStore } from '@/stores/data';
-import { useRoute } from 'vue-router';
+import InputCard from "@/components/InputCard.vue";
+import { useDataStore } from "@/stores/data";
+import { useRoute } from "vue-router";
 
 // Get the datas store
-const dataStore = useDataStore()
+const dataStore = useDataStore();
 
 // Get the route
-const route = useRoute()
+const route = useRoute();
 
 // Properties of the component
 const props = defineProps({
@@ -27,59 +26,59 @@ const props = defineProps({
 });
 
 function getAttributeValue() {
-  if ('elt' in route.params) {
+  if ("elt" in route.params) {
     try {
-      let modulePartIndex = +route.params.part
-      let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
-      let modulePartElementIndex = +route.params.elt
-      let modulePartElement = modulePart.elements[modulePartElementIndex]
-      return modulePartElement[props.attribute]
+      let modulePartIndex = +route.params.part;
+      let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
+      let modulePartElementIndex = +route.params.elt;
+      let modulePartElement = modulePart.elements[modulePartElementIndex];
+      return modulePartElement[props.attribute];
     } catch (error) {
-      return ''
+      return "";
     }
-  } else if ('part' in route.params) {
+  } else if ("part" in route.params) {
     try {
-      let modulePartIndex = +route.params.part
-      let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
-      return modulePart[props.attribute]
+      let modulePartIndex = +route.params.part;
+      let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
+      return modulePart[props.attribute];
     } catch (error) {
-      return ''
+      return "";
     }
-  } else if ('id' in route.params) {
-    return dataStore.moduleEdited[props.attribute]
+  } else if ("id" in route.params) {
+    return dataStore.moduleEdited[props.attribute];
   } else {
-    return ''
+    return "";
   }
 }
 
 function edit(e: Event) {
   let input = e.target as HTMLInputElement;
-  if ('elt' in route.params) {
-    let modulePartIndex = +route.params.part
-    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
-    let modulePartElementIndex = +route.params.elt
-    let modulePartElement = modulePart.elements[modulePartElementIndex]
+  if ("elt" in route.params) {
+    let modulePartIndex = +route.params.part;
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
+    let modulePartElementIndex = +route.params.elt;
+    let modulePartElement = modulePart.elements[modulePartElementIndex];
     modulePartElement[input.id] = input.value;
-    dataStore.checkModuleEdition()
-  } else if ('part' in route.params) {
-    let modulePartIndex = +route.params.part
-    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    dataStore.checkModuleEdition();
+  } else if ("part" in route.params) {
+    let modulePartIndex = +route.params.part;
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
     modulePart[input.id] = input.value;
-    dataStore.checkModuleEdition()
-  } else if ('id' in route.params) {
+    dataStore.checkModuleEdition();
+  } else if ("id" in route.params) {
     dataStore.editModule(input.id, input.value);
   }
 }
 
 function getCSSClasses() {
-  let classes = 'input-module-attribute'
+  let classes = "input-module-attribute";
 
-  if ('elt' in route.params) {
-    classes += ' input-module-part-elt-attribute'
-  } else if ('part' in route.params) {
-    classes += ' input-module-part-attribute'
+  if ("elt" in route.params) {
+    classes += " input-module-part-elt-attribute";
+  } else if ("part" in route.params) {
+    classes += " input-module-part-attribute";
   }
-  return classes
+  return classes;
 }
 
 async function handleFileUpload(e: Event) {
@@ -88,104 +87,152 @@ async function handleFileUpload(e: Event) {
 
   // Check if the file is selected
   if (!input.files || input.files.length <= 0) {
-    return
+    return;
   }
   file = input.files[0];
 
   // Check if the file is an image
-  if (!file.type.startsWith('image/')) {
-    alert('Veuillez uploader une image.');
+  if (!file.type.startsWith("image/")) {
+    alert("Veuillez uploader une image.");
     return;
   }
 
   // Check if the file size is under 500KB
   if (file.size > 500 * 1024) {
-    alert('Votre image est trop grande, elle doit faire moins de 500ko.');
+    alert("Votre image est trop grande, elle doit faire moins de 500ko.");
     return;
   }
 
   // Keep the file
-  if ('elt' in route.params) {
-    let modulePartIndex = +route.params.part
-    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
-    let modulePartElementIndex = +route.params.elt
-    let modulePartElement = modulePart.elements[modulePartElementIndex]
+  if ("elt" in route.params) {
+    let modulePartIndex = +route.params.part;
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
+    let modulePartElementIndex = +route.params.elt;
+    let modulePartElement = modulePart.elements[modulePartElementIndex];
     modulePartElement.file = file;
-    dataStore.checkModuleEdition()
-  } else if ('part' in route.params) {
-    let modulePartIndex = +route.params.part
-    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    dataStore.checkModuleEdition();
+  } else if ("part" in route.params) {
+    let modulePartIndex = +route.params.part;
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
     modulePart.file = file;
-    dataStore.checkModuleEdition()
+    dataStore.checkModuleEdition();
   } else {
     dataStore.editModule("file", file);
   }
 
   // Preview the image
-  await dataStore.loadImageUrl()
+  await dataStore.loadImageUrl();
 }
 
 async function deleteImage() {
-  if ('elt' in route.params) {
-    let modulePartIndex = +route.params.part
-    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
-    let modulePartElementIndex = +route.params.elt
-    let modulePartElement = modulePart.elements[modulePartElementIndex]
+  if ("elt" in route.params) {
+    let modulePartIndex = +route.params.part;
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
+    let modulePartElementIndex = +route.params.elt;
+    let modulePartElement = modulePart.elements[modulePartElementIndex];
     if (modulePartElement.file) {
       modulePartElement.file = undefined;
-    } else if (modulePartElement.image !== '') {
+    } else if (modulePartElement.image !== "") {
       modulePartElement.image = "";
     }
-    dataStore.checkModuleEdition()
-  } else if ('part' in route.params) {
-    let modulePartIndex = +route.params.part
-    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    dataStore.checkModuleEdition();
+  } else if ("part" in route.params) {
+    let modulePartIndex = +route.params.part;
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex];
     if (modulePart.file) {
       modulePart.file = undefined;
-    } else if (modulePart.image !== '') {
+    } else if (modulePart.image !== "") {
       modulePart.image = "";
     }
-    dataStore.checkModuleEdition()
+    dataStore.checkModuleEdition();
   } else {
     if (dataStore.moduleEdited.file) {
       dataStore.editModule("file", undefined);
-    } else if (dataStore.moduleEdited.image !== '') {
+    } else if (dataStore.moduleEdited.image !== "") {
       dataStore.editModule("image", "");
     }
   }
-  await dataStore.loadImageUrl()
+  await dataStore.loadImageUrl();
 }
-
 </script>
 
 <template>
-  <div v-if="type == 'file'" :class="getCSSClasses()">
+  <div
+    v-if="type == 'file'"
+    :class="getCSSClasses()"
+  >
     <label for="image">{{ label }}</label>
-    <input style="display: none;" type="file" id="image" name="image" @change="handleFileUpload" />
+    <input
+      style="display: none"
+      type="file"
+      id="image"
+      name="image"
+      @change="handleFileUpload"
+    />
     <div class="image-choice">
-      <img class="image-preview" v-if="dataStore.imageUrl !== ''" :src="dataStore.imageUrl" alt="image" />
+      <img
+        class="image-preview"
+        v-if="dataStore.imageUrl !== ''"
+        :src="dataStore.imageUrl"
+        alt="image"
+      />
       <p v-else>Aucune image</p>
       <div class="image-actions">
-        <a v-if="dataStore.imageUrl !== ''" href="javascript:void(0)" @click="deleteImage"><img
-            src="../assets/svg/delete.svg"></a>
-        <label class="label-for-file" for="image">
-          <img src="../assets/svg/upload.svg" title="Importer">
+        <a
+          v-if="dataStore.imageUrl !== ''"
+          href="javascript:void(0)"
+          @click="deleteImage"
+          ><img src="../assets/svg/delete.svg"
+        /></a>
+        <label
+          class="label-for-file"
+          for="image"
+        >
+          <img
+            src="../assets/svg/upload.svg"
+            title="Importer"
+          />
         </label>
       </div>
     </div>
   </div>
-  <div v-else-if="type == 'picker'" :class="getCSSClasses()">
+  <div
+    v-else-if="type == 'picker'"
+    :class="getCSSClasses()"
+  >
     <label for="icon">{{ label }}</label>
-    <input type="hidden" id="icon" name="icon" :value="getAttributeValue()" />
+    <input
+      type="hidden"
+      id="icon"
+      name="icon"
+      :value="getAttributeValue()"
+    />
     <div class="icon-choice">
-      <i v-if="getAttributeValue() !== ''" class="material-icons" :title="getAttributeValue()">{{
-        getAttributeValue() }}</i>
+      <i
+        v-if="getAttributeValue() !== ''"
+        class="material-icons"
+        :title="getAttributeValue()"
+        >{{ getAttributeValue() }}</i
+      >
       <p v-else>Aucune Icône</p>
-      <a class="picker-button" href="javascript:void(0)"><img src="../assets/svg/edit.svg" title="Modifier"
-          alt="edit"></a>
+      <a
+        class="picker-button"
+        href="javascript:void(0)"
+        ><img
+          src="../assets/svg/edit.svg"
+          title="Modifier"
+          alt="edit"
+      /></a>
     </div>
   </div>
-  <InputCard v-else :id="attribute" :label="label" :type="type" :value="getAttributeValue()" :action="edit" />
+  <InputCard
+    v-else
+    :id="attribute"
+    :label="label"
+    :type="type"
+    :value="getAttributeValue()"
+    :action="edit"
+  />
 </template>
 
 <style>
