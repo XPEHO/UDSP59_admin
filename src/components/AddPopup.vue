@@ -7,7 +7,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Module } from '@/models/Module';
 import { ModulePart } from '@/models/ModulePart';
 import { Account } from '@/models/Account';
-import type { ModulePartElement } from '@/models/ModulePartElement';
+import { ModulePartElement } from '@/models/ModulePartElement';
 
 // Get the route
 const route = useRoute()
@@ -70,7 +70,13 @@ function addModulePart() {
 }
 
 function addModulePartElement() {
-
+  let titleInput = document.querySelector('.popup-add #titleToAdd') as HTMLInputElement;
+  let modulePartElement = new ModulePartElement("", titleInput.value);
+  let modulePart = dataStore.moduleEdited.parts[+route.params.part];
+  modulePart.addElement(modulePartElement);
+  dataStore.checkModuleEdition();
+  titleInput.value = "";
+  hide();
 }
 
 function addTip() {
