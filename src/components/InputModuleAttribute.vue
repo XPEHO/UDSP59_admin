@@ -28,10 +28,15 @@ const props = defineProps({
 
 function getAttributeValue() {
   if ('elt' in route.params) {
-    let module = dataStore.moduleEdited
-    let modulePart = module.parts[+route.params.part]
-    let modulePartElement = modulePart.elements[+route.params.elt]
-    return modulePartElement[props.attribute]
+    try {
+      let modulePartIndex = +route.params.part
+      let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+      let modulePartElementIndex = +route.params.elt
+      let modulePartElement = modulePart.elements[modulePartElementIndex]
+      return modulePartElement[props.attribute]
+    } catch (error) {
+      return ''
+    }
   } else if ('part' in route.params) {
     try {
       let modulePartIndex = +route.params.part
@@ -50,7 +55,12 @@ function getAttributeValue() {
 function edit(e: Event) {
   let input = e.target as HTMLInputElement;
   if ('elt' in route.params) {
-
+    let modulePartIndex = +route.params.part
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    let modulePartElementIndex = +route.params.elt
+    let modulePartElement = modulePart.elements[modulePartElementIndex]
+    modulePartElement[input.id] = input.value;
+    dataStore.checkModuleEdition()
   } else if ('part' in route.params) {
     let modulePartIndex = +route.params.part
     let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
@@ -96,7 +106,12 @@ async function handleFileUpload(e: Event) {
 
   // Keep the file
   if ('elt' in route.params) {
-
+    let modulePartIndex = +route.params.part
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    let modulePartElementIndex = +route.params.elt
+    let modulePartElement = modulePart.elements[modulePartElementIndex]
+    modulePartElement.file = file;
+    dataStore.checkModuleEdition()
   } else if ('part' in route.params) {
     let modulePartIndex = +route.params.part
     let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
@@ -112,7 +127,16 @@ async function handleFileUpload(e: Event) {
 
 async function deleteImage() {
   if ('elt' in route.params) {
-
+    let modulePartIndex = +route.params.part
+    let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
+    let modulePartElementIndex = +route.params.elt
+    let modulePartElement = modulePart.elements[modulePartElementIndex]
+    if (modulePartElement.file) {
+      modulePartElement.file = undefined;
+    } else if (modulePartElement.image !== '') {
+      modulePartElement.image = "";
+    }
+    dataStore.checkModuleEdition()
   } else if ('part' in route.params) {
     let modulePartIndex = +route.params.part
     let modulePart = dataStore.moduleEdited.parts[modulePartIndex]
