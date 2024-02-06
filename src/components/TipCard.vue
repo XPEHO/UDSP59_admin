@@ -36,7 +36,7 @@ function focusTextarea(event: MouseEvent) {
   <div class="tip-card">
     <textarea
       name="content"
-      v-model="getTip"
+      :value="getTip()"
       @input="dataStore.editTip(index, ($event.target as HTMLTextAreaElement).value)"
     ></textarea>
     <div>
