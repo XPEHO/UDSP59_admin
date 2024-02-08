@@ -1,3 +1,4 @@
+import { generateRandomId } from "@/utilities/functions";
 import { ModulePart } from "./ModulePart";
 import { useDataStore } from "@/stores/data";
 
@@ -93,8 +94,9 @@ export class Module {
 
     // Check if the file property is defined
     if (this.file) {
+      // Generate a new reference by a generated id and the same extension of the file
+      const newRef = generateRandomId() + this.file.name.slice(this.file.name.lastIndexOf("."));
       // Upload the file to firebase
-      const newRef = `modules/${this.id}/${this.file.name}`;
       await dataStore.uploadFileToFirebase(this.file, newRef, this.image);
       this.image = newRef;
     }
@@ -109,7 +111,7 @@ export class Module {
     if (this.parts.length !== 0) {
       await Promise.all(
         this.parts.map((part, index) => {
-          return part.uploadImagesToFirebase(originModule.parts[index], this.id, index);
+          return part.uploadImagesToFirebase(originModule.parts[index]);
         }),
       );
     }
