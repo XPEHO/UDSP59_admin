@@ -1,4 +1,5 @@
 import { useDataStore } from "@/stores/data";
+import { generateRandomId } from "@/utilities/functions";
 
 export class ModulePartElement {
   image: string;
@@ -27,19 +28,15 @@ export class ModulePartElement {
     return new ModulePartElement(this.image, this.text);
   }
 
-  async uploadImagesToFirebase(
-    originElement: ModulePartElement,
-    id: string,
-    partIndex: number,
-    index: number,
-  ) {
+  async uploadImagesToFirebase(originElement: ModulePartElement) {
     // Get the datastore
     const dataStore = useDataStore();
 
     // Check if the file property is defined
     if (this.file) {
+      // Generate a new reference by a generated id and the same extension of the file
+      const newRef = generateRandomId() + this.file.name.slice(this.file.name.lastIndexOf("."));
       // Upload the file to firebase
-      const newRef = `modules/${id}/${partIndex}/${index}/${this.file.name}`;
       await dataStore.uploadFileToFirebase(this.file, newRef, this.image);
       this.image = newRef;
     }
