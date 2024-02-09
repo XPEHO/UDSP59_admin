@@ -101,8 +101,13 @@ export class Module {
       this.image = newRef;
     }
 
-    // Check if we need to delete image
-    if (this.image == "" && originModule && this.image !== originModule.image) {
+    // Check if we need to delete image, so if the new image is empty and the origin part is the same but with an image
+    if (
+      this.image == "" &&
+      originModule &&
+      this.image !== originModule.image &&
+      this.title === originModule.title
+    ) {
       // Delete the image from firebase
       await dataStore.deleteFileFromFirebase(originModule.image);
     }

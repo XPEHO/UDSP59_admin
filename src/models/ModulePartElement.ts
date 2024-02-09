@@ -41,8 +41,13 @@ export class ModulePartElement {
       this.image = newRef;
     }
 
-    // Check if we need to delete image
-    if (this.image == "" && originElement && this.image !== originElement.image) {
+    // Check if we need to delete image, so if the new image is empty and the origin element is the same but with an image
+    if (
+      this.image == "" &&
+      originElement &&
+      this.image !== originElement.image &&
+      this.text === originElement.text
+    ) {
       // Delete the image from firebase
       await dataStore.deleteFileFromFirebase(originElement.image);
     }
