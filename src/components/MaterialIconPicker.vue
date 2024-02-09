@@ -27,6 +27,9 @@ onBeforeUnmount(() => {
 function hide() {
   let popupWrapper = document.querySelector(".popup-picker-wrapper") as HTMLElement;
   popupWrapper.style.display = "none";
+  let searchInput = document.querySelector(".search-box input") as HTMLInputElement;
+  searchInput.value = "";
+  materialIconsStore.search("");
 }
 
 function show() {

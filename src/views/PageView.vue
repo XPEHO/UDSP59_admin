@@ -258,7 +258,7 @@ main.page-view {
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      align-items: flex-start;
+      align-items: center;
       align-content: flex-start;
       gap: 1.5rem;
       width: 100%;

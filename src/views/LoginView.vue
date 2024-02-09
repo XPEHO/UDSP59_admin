@@ -65,7 +65,7 @@ main.login-view {
     background-position: center;
     background-size: cover;
     text-align: center;
-    flex: 1.5;
+    width: 58%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -76,7 +76,7 @@ main.login-view {
   }
 
   & section:last-child {
-    flex: 1;
+    width: 42%;
     display: flex;
     flex-direction: column;
     justify-content: center;

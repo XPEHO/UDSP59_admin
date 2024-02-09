@@ -18,7 +18,11 @@ onMounted(async () => {
 <template>
   <AppLoader v-if="isLoading" />
   <main v-else>
+    <div v-if="dataStore.getSortedModules().length == 0">
+      <p>Aucun module pour le moment.</p>
+    </div>
     <ModuleCard
+      v-else
       v-for="module in dataStore.getSortedModules()"
       :key="module.id"
       :id="module.id"
