@@ -21,7 +21,11 @@ onMounted(async () => {
     class="tips-view"
     v-else
   >
+    <div v-if="dataStore.tipsEdited.length == 0">
+      <p>Aucune astuce pour le moment.</p>
+    </div>
     <TipCard
+      v-else
       v-for="(tip, index) in dataStore.tipsEdited"
       :key="index"
       :index="index"

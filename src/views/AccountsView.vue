@@ -21,7 +21,11 @@ onMounted(async () => {
     class="accounts-view"
     v-else
   >
+    <div v-if="dataStore.accountsEdited.size == 0">
+      <p>Aucun compte pour le moment.</p>
+    </div>
     <AccountCard
+      v-else
       v-for="[id, account] in dataStore.accountsEdited"
       :key="id"
       :id="id"

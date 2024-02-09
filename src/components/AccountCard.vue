@@ -97,16 +97,16 @@ function editAccount(id: string, attribute: string, value: any) {
     position: relative;
     margin-bottom: 0.5rem;
 
-    & img[src*="user"] {
+    & img {
       height: 4rem;
       width: 4rem;
-    }
 
-    & img[src*="fireman"] {
-      height: 2.8rem;
-      width: 3.3rem;
-      position: absolute;
-      top: -1.6rem;
+      &[src*="fireman"] {
+        height: 2.8rem;
+        width: 3.3rem;
+        position: absolute;
+        top: -1.6rem;
+      }
     }
   }
 
