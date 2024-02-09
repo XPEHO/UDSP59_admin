@@ -419,27 +419,45 @@ export const useDataStore = defineStore("dataStore", {
         const modulePart = module.parts[+route.params.part];
         const modulePartElement = modulePart.elements[+route.params.elt];
         if (modulePartElement.file) {
+          // If there is a file we get the url of the blob
           url = URL.createObjectURL(modulePartElement.file);
         } else if (modulePartElement.image !== "") {
-          url = await getDownloadURL(ref(storage, modulePartElement.image));
+          // If there is an image we get the url of the image from firebase
+          url = await getDownloadURL(ref(storage, modulePartElement.image)).catch((error) => {
+            console.error(error);
+            return "";
+          });
         } else {
+          // Else we display nothing
           url = "";
         }
       } else if ("part" in route.params) {
         const modulePart = module.parts[+route.params.part];
         if (modulePart.file) {
+          // If there is a file we get the url of the blob
           url = URL.createObjectURL(modulePart.file);
         } else if (modulePart.image !== "") {
-          url = await getDownloadURL(ref(storage, modulePart.image));
+          // If there is an image we get the url of the image from firebase
+          url = await getDownloadURL(ref(storage, modulePart.image)).catch((error) => {
+            console.error(error);
+            return "";
+          });
         } else {
+          // Else we display nothing
           url = "";
         }
       } else {
         if (module.file) {
+          // If there is a file we get the url of the blob
           url = URL.createObjectURL(module.file);
         } else if (module.image !== "") {
-          url = await getDownloadURL(ref(storage, module.image));
+          // If there is an image we get the url of the image from firebase
+          url = await getDownloadURL(ref(storage, module.image)).catch((error) => {
+            console.error(error);
+            return "";
+          });
         } else {
+          // Else we display nothing
           url = "";
         }
       }
