@@ -42,12 +42,6 @@ dataStore.reset();
             >XPEHO</a
           >
         </p>
-        <a
-          class="link-text-clickable"
-          href=""
-          target="_blank"
-          >Politiques de confidentialité</a
-        >
       </footer>
     </section>
   </main>
