@@ -120,6 +120,9 @@ async function handleFileUpload(e: Event) {
     dataStore.editModule("file", file);
   }
 
+  // Clear the input file uploaded
+  input.value = "";
+
   // Preview the image
   await dataStore.loadImageUrl();
 }

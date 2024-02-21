@@ -19,6 +19,7 @@ interface DataState {
   accountsEdited: Map<string, Account>;
   tipsEdited: Array<string>;
   moduleEdited: Module;
+  imagesToDelete: Array<string>;
   currentRoute: RouteLocationNormalizedLoaded;
   imageUrl: string;
   toSave: boolean;
@@ -34,6 +35,7 @@ export const useDataStore = defineStore("dataStore", {
     accountsEdited: new Map<string, Account>(),
     tipsEdited: Array<string>(),
     moduleEdited: {} as Module,
+    imagesToDelete: Array<string>(),
     currentRoute: {} as RouteLocationNormalizedLoaded,
     imageUrl: "",
     toSave: false,
@@ -47,6 +49,7 @@ export const useDataStore = defineStore("dataStore", {
     getAccountsEdited: (state: DataState) => state.accountsEdited,
     getTipsEdited: (state: DataState) => state.tipsEdited,
     getModuleEdited: (state: DataState) => state.moduleEdited,
+    getImagesToDelete: (state: DataState) => state.imagesToDelete,
     getCurrentRoute: (state: DataState) => state.currentRoute,
     getImageUrl: (state: DataState) => state.imageUrl,
     needToSave: (state: DataState) => state.toSave,
@@ -62,6 +65,7 @@ export const useDataStore = defineStore("dataStore", {
       this.accountsEdited = new Map<string, Account>();
       this.tipsEdited = Array<string>();
       this.moduleEdited = {} as Module;
+      this.imagesToDelete = Array<string>();
       this.imageUrl = "";
       this.toSave = false;
     },
@@ -100,6 +104,11 @@ export const useDataStore = defineStore("dataStore", {
       }
     },
     deleteModule(id: string) {
+      // Mark the images to be deleted
+      const deletedModule = this.modulesEdited.get(id)!;
+      for (const imageRef of deletedModule.getAllImages()) {
+        this.imagesToDelete.push(imageRef);
+      }
       // Change local datas to delete module
       this.modulesEdited.delete(id);
       // Update order
@@ -238,18 +247,27 @@ export const useDataStore = defineStore("dataStore", {
           await setDoc(doc(modulesCollection, id), module.toJsonObject());
         }
       }
-      // Delete accounts
+      // Delete modules
       for (const id of this.modules.keys()) {
         if (!this.modulesEdited.has(id)) {
           // This module has been deleted
           await deleteDoc(doc(modulesCollection, id));
         }
       }
+      // Delete images that need to be deleted
+      for (const imageRef of this.imagesToDelete) {
+        await this.deleteFileFromFirebase(imageRef);
+      }
+      // Reload modules
       this.loadModulesFromFirebase();
     },
     saveModuleToFirebase: async function (id: string) {
       // Upload images to firebase
       await this.moduleEdited.uploadImagesToFirebase(this.module);
+      // Delete images that need to be deleted
+      for (const imageRef of this.imagesToDelete) {
+        await this.deleteFileFromFirebase(imageRef);
+      }
       // Replace existing module
       await setDoc(doc(modulesCollection, id), this.moduleEdited.toJsonObject());
       // Reload module
@@ -283,21 +301,14 @@ export const useDataStore = defineStore("dataStore", {
       // Reload accounts
       this.loadAccountsFromFirebase();
     },
-    uploadFileToFirebase: async function (file: File, newRef: string, oldRef: string) {
+    uploadFileToFirebase: async function (file: File, newRef: string) {
       // Create a storage reference
       const storageRef = ref(storage, newRef);
 
       // Upload the new file
-      await uploadBytes(storageRef, file)
-        .then(async () => {
-          // Remove old file if exists
-          if (oldRef !== "") {
-            await this.deleteFileFromFirebase(oldRef);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      await uploadBytes(storageRef, file).catch((error) => {
+        console.error(error);
+      });
     },
     deleteFileFromFirebase: async function (oldRef: string) {
       // Delete the file from firebase

@@ -37,7 +37,10 @@ export class ModulePartElement {
       // Generate a new reference by a generated id and the same extension of the file
       const newRef = generateRandomId() + this.file.name.slice(this.file.name.lastIndexOf("."));
       // Upload the file to firebase
-      await dataStore.uploadFileToFirebase(this.file, newRef, this.image);
+      await dataStore.uploadFileToFirebase(this.file, newRef);
+      // Mark the old reference to be deleted
+      if (this.image !== "") dataStore.imagesToDelete.push(this.image);
+      // Set the new reference to the image property
       this.image = newRef;
     }
 
@@ -48,8 +51,8 @@ export class ModulePartElement {
       this.image !== originElement.image &&
       this.text === originElement.text
     ) {
-      // Delete the image from firebase
-      await dataStore.deleteFileFromFirebase(originElement.image);
+      // Mark the image to be deleted
+      dataStore.imagesToDelete.push(originElement.image);
     }
   }
 }

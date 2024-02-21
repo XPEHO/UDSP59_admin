@@ -48,6 +48,13 @@ export class Module {
   }
 
   deletePart(partIndex: number) {
+    // Get the datastore
+    const dataStore = useDataStore();
+    // Mark the images to be deleted
+    for (const imageRef of this.parts[partIndex].getAllImages()) {
+      dataStore.imagesToDelete.push(imageRef);
+    }
+    // Delete the part
     this.parts.splice(partIndex, 1);
   }
 
@@ -88,6 +95,14 @@ export class Module {
     );
   }
 
+  getAllImages() {
+    let images = this.image !== "" ? [this.image] : [];
+    this.parts.forEach((part) => {
+      images = images.concat(part.getAllImages());
+    });
+    return images;
+  }
+
   async uploadImagesToFirebase(originModule: Module) {
     // Get the datastore
     const dataStore = useDataStore();
@@ -97,7 +112,10 @@ export class Module {
       // Generate a new reference by a generated id and the same extension of the file
       const newRef = generateRandomId() + this.file.name.slice(this.file.name.lastIndexOf("."));
       // Upload the file to firebase
-      await dataStore.uploadFileToFirebase(this.file, newRef, this.image);
+      await dataStore.uploadFileToFirebase(this.file, newRef);
+      // Mark the old reference to be deleted
+      if (this.image !== "") dataStore.imagesToDelete.push(this.image);
+      // Set the new reference to the image property
       this.image = newRef;
     }
 
@@ -108,8 +126,8 @@ export class Module {
       this.image !== originModule.image &&
       this.title === originModule.title
     ) {
-      // Delete the image from firebase
-      await dataStore.deleteFileFromFirebase(originModule.image);
+      // Mark the image to be deleted
+      dataStore.imagesToDelete.push(originModule.image);
     }
 
     // Upload the images of the parts to firebase
