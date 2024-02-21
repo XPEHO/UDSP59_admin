@@ -35,6 +35,12 @@ export class ModulePart {
   }
 
   deleteElement(eltIndex: number) {
+    // Get the datastore
+    const dataStore = useDataStore();
+    // Mark the image to be deleted
+    const imageRef = this.elements[eltIndex].image;
+    if (imageRef !== "") dataStore.imagesToDelete.push(imageRef);
+    // Delete the element
     this.elements.splice(eltIndex, 1);
   }
 
@@ -68,6 +74,14 @@ export class ModulePart {
     );
   }
 
+  getAllImages() {
+    let images = this.image !== "" ? [this.image] : [];
+    for (const element of this.elements) {
+      if (element.image !== "") images = images.concat([element.image]);
+    }
+    return images;
+  }
+
   async uploadImagesToFirebase(originPart: ModulePart) {
     // Get the datastore
     const dataStore = useDataStore();
@@ -77,7 +91,10 @@ export class ModulePart {
       // Generate a new reference by a generated id and the same extension of the file
       const newRef = generateRandomId() + this.file.name.slice(this.file.name.lastIndexOf("."));
       // Upload the file to firebase
-      await dataStore.uploadFileToFirebase(this.file, newRef, this.image);
+      await dataStore.uploadFileToFirebase(this.file, newRef);
+      // Mark the old reference to be deleted
+      if (this.image !== "") dataStore.imagesToDelete.push(this.image);
+      // Set the new reference to the image property
       this.image = newRef;
     }
 
@@ -88,8 +105,8 @@ export class ModulePart {
       this.image !== originPart.image &&
       this.subtitle === originPart.subtitle
     ) {
-      // Delete the image from firebase
-      await dataStore.deleteFileFromFirebase(originPart.image);
+      // Mark the image to be deleted
+      dataStore.imagesToDelete.push(originPart.image);
     }
 
     // Upload the images of the elements to firebase
