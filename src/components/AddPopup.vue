@@ -41,11 +41,13 @@ function show() {
   popupWrapper.style.display = "flex";
   let input;
   if (route.name == "Tips") {
-    input = document.querySelector(".popup-add textarea") as HTMLTextAreaElement;
+    input = document.querySelector(".popup-add #tipsToAdd") as HTMLTextAreaElement;
   } else if (route.name == "Accounts") {
     input = document.querySelector(".popup-add #mailToAdd") as HTMLInputElement;
   } else {
-    input = document.querySelector(".popup-add #titleToAdd") as HTMLInputElement;
+    input = document.querySelector(".popup-add #titleToAdd") as
+      | HTMLInputElement
+      | HTMLTextAreaElement;
   }
   input.focus();
 }
@@ -76,7 +78,7 @@ function addModulePart() {
 }
 
 function addModulePartElement() {
-  let titleInput = document.querySelector(".popup-add #titleToAdd") as HTMLInputElement;
+  let titleInput = document.querySelector(".popup-add #titleToAdd") as HTMLTextAreaElement;
   let modulePartElement = new ModulePartElement("", titleInput.value);
   let modulePart = dataStore.moduleEdited.parts[+route.params.part];
   modulePart.addElement(modulePartElement);
@@ -86,7 +88,7 @@ function addModulePartElement() {
 }
 
 function addTip() {
-  let tipInput = document.querySelector(".popup-add textarea") as HTMLTextAreaElement;
+  let tipInput = document.querySelector(".popup-add #tipsToAdd") as HTMLTextAreaElement;
   let tip = tipInput.value;
   dataStore.addTip(tip);
   tipInput.value = "";
@@ -94,7 +96,7 @@ function addTip() {
 }
 
 function addAccount() {
-  let mailInput = document.querySelector('.popup-add input[name="mailToAdd"]') as HTMLInputElement;
+  let mailInput = document.querySelector(".popup-add #mailToAdd") as HTMLInputElement;
   let account = new Account(mailInput.value, false);
   dataStore.addAccount(account);
   mailInput.value = "";
@@ -134,16 +136,24 @@ function getPopupTitle() {
   <div class="popup-add-wrapper">
     <div class="popup-add">
       <h3 class="subtitle-style">{{ getPopupTitle() }}</h3>
-      <textarea
+      <div
         v-if="route.name == 'Tips'"
-        name="content"
-      ></textarea>
+        class="text-area-card"
+      >
+        <textarea id="tipsToAdd"></textarea>
+      </div>
       <InputCard
         v-else-if="route.name == 'Accounts'"
         id="mailToAdd"
         label="Email :"
         type="email"
       />
+      <div
+        v-else-if="'part' in route.params"
+        class="text-area-card"
+      >
+        <textarea id="titleToAdd"></textarea>
+      </div>
       <InputCard
         v-else
         id="titleToAdd"
@@ -195,18 +205,54 @@ function getPopupTitle() {
       color: var(--color-secondary);
     }
 
-    & textarea {
+    &:has(textarea#titleToAdd) {
+      width: 40rem;
+      height: 30rem;
+    }
+
+    &:has(textarea#tipsToAdd) {
+      width: 33rem;
+      height: 23rem;
+    }
+
+    & .text-area-card {
+      background-color: var(--color-primary-1);
+      color: var(--color-background);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 1rem;
       width: 100%;
       height: 100%;
-      resize: none;
-      border: 1px solid var(--color-primary-1);
-      background: none;
-      color: var(--color-primary-1);
-      font-size: 14pt;
-      margin: 1rem 0;
+      box-shadow: 3px 3px 10px 1px rgb(0 0 0 / 40%);
 
-      &:focus {
-        outline: none;
+      &:has(#titleToAdd) {
+        background-color: var(--color-primary-3);
+      }
+
+      & textarea {
+        font-size: 14pt;
+        width: 100%;
+        height: 100%;
+        resize: none;
+        border: none;
+        background: none;
+        color: var(--color-background);
+
+        &::-webkit-scrollbar {
+          width: 0.25rem;
+          height: 0.25rem;
+          border-radius: 0.12rem;
+          background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(255, 255, 255, 0.3);
+          border-radius: 0.12rem;
+        }
+
+        &:focus {
+          outline: none;
+        }
       }
     }
 
