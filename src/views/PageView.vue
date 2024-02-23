@@ -5,6 +5,7 @@ import { useDataStore } from "../stores/data";
 import router from "@/router";
 import AddPopup from "@/components/AddPopup.vue";
 import SaveAlertPopup from "@/components/SaveAlertPopup.vue";
+import { onMounted } from "vue";
 
 // Get the stores
 const userStore = useUserStore();
@@ -12,6 +13,15 @@ const dataStore = useDataStore();
 
 // Get the route
 const route = useRoute();
+
+onMounted(() => {
+  // Prevent leaving the page without saving
+  window.addEventListener("beforeunload", (e) => {
+    if (dataStore.needToSave) {
+      e.preventDefault();
+    }
+  });
+});
 
 // Save to firebase
 function saveToFirebase() {
