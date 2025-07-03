@@ -54,7 +54,8 @@ main.login-view {
   height: 100svh;
 
   & section:first-child {
-    background-image: url("../assets/background.png"),
+    background-image:
+      url("../assets/background.png"),
       linear-gradient(to bottom, rgba(208, 129, 60, 0.9), rgba(186, 22, 38, 0.9));
     background-position: center;
     background-size: cover;
