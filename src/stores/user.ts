@@ -6,6 +6,7 @@ import router from "@/router";
 import { useMaterialIconsStore } from "./material-icons";
 import { useDataStore } from "./data";
 import { saveAlertPopup } from "@/components/SaveAlertPopup.vue";
+import { unauthorizedAlertPopup } from "@/components/UnauthorizedAlertPopup.vue";
 
 interface UserState {
   user: { email: string };
@@ -86,8 +87,12 @@ export const useUserStore = defineStore("userStore", {
               this.admin = snapshot.docs[0].data().admin;
               router.replace({ name: "Modules" });
             } else {
-              // User email does not exist in Firestore collection, sign out and return error
+              // User email does not exist in Firestore collection, show unauthorized alert
               await auth.signOut();
+              // Show the unauthorized alert popup
+              if (unauthorizedAlertPopup) {
+                unauthorizedAlertPopup.show();
+              }
               router.replace({ name: "Login" });
             }
           } else {
