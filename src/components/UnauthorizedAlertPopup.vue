@@ -35,10 +35,6 @@ function show() {
   }
 }
 
-function close() {
-  hide();
-}
-
 unauthorizedAlertPopup.setShowFunction(show);
 </script>
 
@@ -52,7 +48,7 @@ unauthorizedAlertPopup.setShowFunction(show);
       </p>
       <button
         class="button-style-hook"
-        @click="close"
+        @click="hide"
       >
         Fermer
       </button>
