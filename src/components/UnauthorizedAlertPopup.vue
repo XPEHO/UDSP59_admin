@@ -47,10 +47,15 @@ unauthorizedAlertPopup.setShowFunction(show);
     <div class="popup-unauthorized-alert">
       <h3 class="subtitle-style">Accès refusé</h3>
       <p>
-        Votre compte n'est pas autorisé à accéder à cette application.<br><br>
+        Votre compte n'est pas autorisé à accéder à cette application.<br /><br />
         Veuillez contacter un administrateur pour obtenir l'accès.
       </p>
-      <button class="button-style-hook" @click="close">Fermer</button>
+      <button
+        class="button-style-hook"
+        @click="close"
+      >
+        Fermer
+      </button>
     </div>
   </div>
 </template>
