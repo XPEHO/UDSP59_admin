@@ -6,7 +6,7 @@ import router from "@/router";
 import { useMaterialIconsStore } from "./material-icons";
 import { useDataStore } from "./data";
 import { saveAlertPopup } from "@/components/SaveAlertPopup.vue";
-import { unauthorizedAlertPopup } from "@/components/UnauthorizedAlertPopup.vue";
+import { unauthorizedAlertPopup } from "@/utilities/functions";
 
 interface UserState {
   user: { email: string };

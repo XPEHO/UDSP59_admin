@@ -1,3 +1,5 @@
+import { reactive } from "vue";
+
 function areMapsEqual(map1: Map<any, any>, map2: Map<any, any>): boolean {
   if (map1.size !== map2.size) {
     return false;
@@ -22,5 +24,14 @@ function generateRandomId(): string {
   }
   return result;
 }
+
+
+// Public access to show function
+export const unauthorizedAlertPopup = reactive({
+  show: () => {},
+  setShowFunction(show: () => void) {
+    this.show = show;
+  },
+});
 
 export { areMapsEqual, generateRandomId };
