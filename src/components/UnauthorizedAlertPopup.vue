@@ -1,15 +1,6 @@
-<script lang="ts">
-// Public access to show function
-export const unauthorizedAlertPopup = reactive({
-  show: () => {},
-  setShowFunction(show: () => void) {
-    this.show = show;
-  },
-});
-</script>
-
 <script setup lang="ts">
-import { onMounted, reactive } from "vue";
+import { unauthorizedAlertPopup } from "@/utilities/functions";
+import { onMounted } from "vue";
 
 onMounted(() => {
   hide();
