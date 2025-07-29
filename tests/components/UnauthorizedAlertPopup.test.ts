@@ -10,7 +10,7 @@ vi.mock("@/utilities/unauthorizedAlertPopup", () => ({
   },
 }));
 
-describe("UnauthorizedAlertPopup", () => {
+describe("UnauthorizedAlertPopup component to show unauthorized alert", () => {
   let wrapper: any;
   let mockElement: any;
 
@@ -36,13 +36,15 @@ describe("UnauthorizedAlertPopup", () => {
     wrapper = mount(UnauthorizedAlertPopup);
   });
 
-  it("should render correctly", () => {
+  it("should render the component correctly", () => {
+    // test if the wrapper is really functional
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find(".popup-unauthorized-alert-wrapper").exists()).toBe(true);
     expect(wrapper.find(".popup-unauthorized-alert").exists()).toBe(true);
   });
 
   it("should display the correct title and message", () => {
+    // Check if the title and message are rendered correctly
     const title = wrapper.find("h3.subtitle-style");
     const message = wrapper.find("p");
 
@@ -54,6 +56,7 @@ describe("UnauthorizedAlertPopup", () => {
   });
 
   it("should have a close button", () => {
+    // Check if the close button exists and has the correct text
     const closeButton = wrapper.find("button.button-style-hook");
     expect(closeButton.exists()).toBe(true);
     expect(closeButton.text()).toBe("Fermer");
