@@ -7,7 +7,7 @@ onMounted(() => {
   let popupWrapper = document.querySelector(".popup-unauthorized-alert-wrapper") as HTMLElement;
   popupWrapper?.addEventListener("click", (e) => {
     if (e.target === popupWrapper) {
-      close();
+      hide();
     }
   });
 });
