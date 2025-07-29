@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { unauthorizedAlertPopup } from "@/utilities/functions";
+import { unauthorizedAlertPopup } from "@/utilities/unauthorizedAlertPopup";
 import { onMounted } from "vue";
 
 onMounted(() => {

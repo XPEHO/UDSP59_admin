@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "../stores/user";
 import { useDataStore } from "../stores/data";
+import UnauthorizedAlertPopup from "@/components/UnauthorizedAlertPopup.vue";
 
 // Get the stores
 const userStore = useUserStore();
@@ -45,6 +46,7 @@ dataStore.reset();
       </footer>
     </section>
   </main>
+  <UnauthorizedAlertPopup />
 </template>
 
 <style>
